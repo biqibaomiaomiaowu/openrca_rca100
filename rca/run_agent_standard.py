@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import argparse
+from tqdm import tqdm
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, project_root)
 from main.evaluate import evaluate
@@ -12,6 +13,10 @@ from loguru import logger
 from nbformat import v4 as nbf
 import pandas as pd
 import signal
+
+# 让loguru的日志输出不打断tqdm进度条
+logger.remove()
+logger.add(lambda msg: tqdm.write(msg, end=""), colorize=True, enqueue=True, level="INFO")
 
 def handler(signum, frame):
     raise TimeoutError("Loop execution exceeded the time limit")
@@ -65,15 +70,49 @@ def main(args, uid, dataset):
     }
 
     signal.signal(signal.SIGALRM, handler)
+    # logger.info(f"Using dataset: {dataset}")
+    # logger.info(f"Using model: {configs['MODEL'].split('/')[-1]}")
+    
+    # for idx, row in instruct_data.iterrows():
+
+    #     if idx < args.start_idx:
+    #             continue
+    #     if idx > args.end_idx:
+    #         break
     logger.info(f"Using dataset: {dataset}")
     logger.info(f"Using model: {configs['MODEL'].split('/')[-1]}")
-    
-    for idx, row in instruct_data.iterrows():
 
-        if idx < args.start_idx:
-                continue
-        if idx > args.end_idx:
+    # 计算任务范围
+    start = args.start_idx
+    end = args.end_idx if args.end_idx is not None else len(instruct_data) - 1
+    total_tasks = end - start + 1
+    logger.info(f"本次运行任务总数：{total_tasks} 个，行号范围：{start} ~ {end}")
+
+        # 初始化tqdm进度条
+    pbar = tqdm(
+        total=total_tasks,
+        desc="🔍 RCA根因分析进度",
+        unit="个任务",
+        colour="#2ecc71",
+        bar_format="{l_bar}{bar:20}{r_bar}",
+        dynamic_ncols=True
+    )
+
+    for idx, row in instruct_data.iterrows():
+        if idx < start:
+            continue
+        if idx > end:
             break
+    
+        # 更新进度条，显示当前任务信息
+        pbar.update(1)
+        pbar.set_postfix(
+            当前任务=row["task_index"],
+            行号=idx,
+            refresh=True
+        )
+
+
         
         instruction = row["instruction"]
         task_index = row["task_index"]
@@ -163,7 +202,9 @@ def main(args, uid, dataset):
       
         scores = temp_scores
         nums = temp_nums
-
+        # 全部跑完关闭进度条
+    pbar.close()
+    logger.info(f"✅ 所有 {total_tasks} 个任务运行完成！")
 
 if __name__ == "__main__":
     
