@@ -1,0 +1,170 @@
+[32m2026-06-13 09:38:10.189[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.rca_agent[0m:[36mrun[0m:[36m11[0m - [1mObjective: [Task directory: rca100/cases/t008]
+<code vibeops_object type="alert_event">cart响应时间抖动告警<alert_event event_id="e7ea97981cf940f6180f3de7d392a069" trans_id="c0hjo0m6c93u30cugghgfjqb01" rule_id="40ef4477-f6e2-414e-8307-1009a8e45c35" rule_name="cart响应时间抖动告警" /></code>
+
+帮我分析下根因。[0m
+[32m2026-06-13 09:38:12.649[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[1]
+Analysis: None
+Instruction: Load the `task.json` file from the directory `rca100/cases/t008` to understand the alert context, including the alert entity, time window, and prompt text.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:38:18.138[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[1]
+### Observation:
+The alert is titled "cart响应时间抖动告警" (cart response time jitter alert) and was triggered on April 13, 2026, at 04:26:03 (UTC+8). The alert time window spans from 04:22:01 to 04:28:03 (UTC+8). The affected entity is the operation `cart::POST /oteldemo.CartService/AddItem` in the APM domain. The user has requested an analysis of the root cause.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+{'task_id': 't008', 'task_version': '1.0', 'alert_event_id': 'e7ea97981cf940f6180f3de7d392a069', 'alert_title': 'cart响应时间抖动告警', 'alert_trigger_time': '2026-04-13T04:26:03+08:00', 'alert_window': {'start': '2026-04-13T04:22:01+08:00', 'end': '2026-04-13T04:28:03+08:00'}, 'alert_entity': {'entity_id': 'e433b3f842dc4e525a834701cc603c28', 'entity_name': 'cart::POST /oteldemo.CartService/AddItem', 'entity_type': 'apm.operation', 'entity_domain': 'apm'}, 'prompt_text': '<code vibeops_object type="alert_event">cart响应时间抖动告警<alert_event event_id="e7ea97981cf940f6180f3de7d392a069" trans_id="c0hjo0m6c93u30cugghgfjqb01" rule_id="40ef4477-f6e2-414e-8307-1009a8e45c35" rule_name="cart响应时间抖动告警" /></code>\n\n帮我分析下根因。', 'workspace': 'rca-benchmark', 'region_id': 'cn-hongkong', 'available_modalities': ['metrics', 'logs', 'traces', 'events', 'alerts', 'topology'], 'scoring_note': 'Output contract (prediction_schema.json) and fault taxonomy (taxonomy.json) will be published in a follow-up release.'}
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:38:21.371[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[2]
+Analysis: The alert is related to response time jitter for the operation `cart::POST /oteldemo.CartService/AddItem` in the APM domain. The time window for the alert spans from 04:22:01 to 04:28:03 (UTC+8). The next step is to analyze the topology to understand the service dependency graph and identify related components.
+Instruction: Load the `topology.json` file from the directory `rca100/cases/t008` to understand the service dependency graph, including entities and their relationships.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:38:23.548[0m | [33m[1mWARNING [0m | [36mrca.baseline.rca_agent.executor[0m:[36mexecute_act[0m:[36m94[0m - [33m[1mToken length exceeds the limit: 50972[0m
+[32m2026-06-13 09:38:26.140[0m | [33m[1mWARNING [0m | [36mrca.baseline.rca_agent.executor[0m:[36mexecute_act[0m:[36m94[0m - [33m[1mToken length exceeds the limit: 50972[0m
+[32m2026-06-13 09:38:26.140[0m | [31m[1mERROR   [0m | [36mrca.baseline.rca_agent.executor[0m:[36mexecute_act[0m:[36m133[0m - [31m[1mMax try reached. Please check the history. Time cost: 0:00:04.768697[0m
+[32m2026-06-13 09:38:26.140[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[2]
+### Observation:
+The Executor failed to complete the instruction, please re-write a new instruction for Executor.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:38:29.278[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[3]
+Analysis: The alert is related to response time jitter for the operation `cart::POST /oteldemo.CartService/AddItem` in the APM domain. The time window for the alert spans from 04:22:01 to 04:28:03 (UTC+8). The previous attempt to load the topology file failed, so we need to retry this step to understand the service dependency graph and identify related components.
+Instruction: Retry loading the `topology.json` file from the directory `rca100/cases/t008` to understand the service dependency graph, including entities and their relationships. Ensure the file path and format are correct.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:38:34.885[0m | [33m[1mWARNING [0m | [36mrca.baseline.rca_agent.executor[0m:[36mexecute_act[0m:[36m94[0m - [33m[1mToken length exceeds the limit: 50972[0m
+[32m2026-06-13 09:38:38.017[0m | [33m[1mWARNING [0m | [36mrca.baseline.rca_agent.executor[0m:[36mexecute_act[0m:[36m94[0m - [33m[1mToken length exceeds the limit: 50972[0m
+[32m2026-06-13 09:38:38.018[0m | [31m[1mERROR   [0m | [36mrca.baseline.rca_agent.executor[0m:[36mexecute_act[0m:[36m133[0m - [31m[1mMax try reached. Please check the history. Time cost: 0:00:08.738805[0m
+[32m2026-06-13 09:38:38.018[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[3]
+### Observation:
+The Executor failed to complete the instruction, please re-write a new instruction for Executor.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:38:42.229[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[4]
+Analysis: The alert is related to response time jitter for the operation `cart::POST /oteldemo.CartService/AddItem` in the APM domain. The time window for the alert spans from 04:22:01 to 04:28:03 (UTC+8). Previous attempts to load the topology file failed, which is critical for understanding service dependencies. To proceed, we will focus on metrics analysis to identify anomalies in the affected operation and related components.
+Instruction: Load the `metrics.parquet` file from the directory `rca100/cases/t008` and aggregate metrics for all possible root cause components (services, nodes) to calculate global thresholds (e.g., P95) for each KPI. Ensure the `time` and `value` columns are converted to numeric types for accurate analysis.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:38:47.859[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[4]
+### Observation:
+The global thresholds (P95) for various KPIs have been calculated for all entities and metrics. These thresholds represent the 95th percentile values, which can be used to identify anomalies. The dataset includes metrics such as `apiserver_requests_per_second`, `cluster_failed_node_count`, `workload`, `avg_request_latency_seconds`, and `request_count` across different entities like `shipping` and specific operations (e.g., `shipping::oteldemo.ShippingService/GetQuote`). The full details are available in the DataFrame.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+entity_name                               metric  p95_threshold
+0                                                     apiserver_concurrent_connections       6.000000
+1                                                   apiserver_non_2xx_read_request_qps       0.267261
+2                                                  apiserver_non_2xx_write_request_qps       0.053723
+3                                                        apiserver_requests_per_second      21.246175
+4                                                            cluster_failed_node_count       0.000000
+..                                            ...                                  ...            ...
+267                                      shipping                             workload    4668.600000
+268   shipping::oteldemo.ShippingService/GetQuote          avg_request_latency_seconds       0.002863
+269   shipping::oteldemo.ShippingService/GetQuote                        request_count    2334.000000
+270  shipping::oteldemo.ShippingService/ShipOrder          avg_request_latency_seconds       0.000018
+271  shipping::oteldemo.ShippingService/ShipOrder                        request_count    2334.600000
+
+[272 rows x 3 columns]
+
+**Note**: The printed pandas DataFrame is truncated due to its size. Only **10 rows** are displayed, which may introduce observation bias due to the incomplete table. If you want to comprehensively understand the details without bias, please ask Executor using `df.head(X)` to display more rows.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:38:51.798[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[5]
+Analysis: The global thresholds (P95) for various KPIs across different entities have been calculated. These thresholds will help identify anomalies during the alert time window. The next step is to filter the metrics data to include only the time window of the alert (04:22:01 to 04:28:03 UTC+8) and analyze the KPIs for the affected operation `cart::POST /oteldemo.CartService/AddItem` and other possible root cause components.
+Instruction: Filter the `metrics.parquet` data to include only the time window of the alert (04:22:01 to 04:28:03 UTC+8). Focus on the KPIs for the affected operation `cart::POST /oteldemo.CartService/AddItem` and other possible root cause components. Identify any anomalies by comparing the KPI values against the global P95 thresholds.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:39:00.939[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[5]
+### Observation:
+During the alert time window, the KPIs for the affected operation `cart::POST /oteldemo.CartService/AddItem` were analyzed. Most KPI values were within the global P95 thresholds, indicating no anomalies. However, a few instances of the metric `avg_request_latency_seconds` exceeded the P95 threshold of 0.056963 seconds, marking them as anomalous. These anomalies suggest occasional spikes in response latency during the alert period.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+time domain     entity_set                         entity_id                               entity_name  ...        value                            metric_set_id service p95_threshold  is_anomalous
+0   1776025321000000    apm  apm.operation  e433b3f842dc4e525a834701cc603c28  cart::POST /oteldemo.CartService/AddItem  ...  2278.000000  apm@metric_set@apm.metric.apm.operation    None   2342.400000         False
+1   1776025351000000    apm  apm.operation  e433b3f842dc4e525a834701cc603c28  cart::POST /oteldemo.CartService/AddItem  ...  1919.000000  apm@metric_set@apm.metric.apm.operation    None   2342.400000         False
+2   1776025381000000    apm  apm.operation  e433b3f842dc4e525a834701cc603c28  cart::POST /oteldemo.CartService/AddItem  ...  1218.000000  apm@metric_set@apm.metric.apm.operation    None   2342.400000         False
+3   1776025411000000    apm  apm.operation  e433b3f842dc4e525a834701cc603c28  cart::POST /oteldemo.CartService/AddItem  ...  1284.000000  apm@metric_set@apm.metric.apm.operation    None   2342.400000         False
+4   1776025441000000    apm  apm.operation  e433b3f842dc4e525a834701cc603c28  cart::POST /oteldemo.CartService/AddItem  ...  1508.000000  apm@metric_set@apm.metric.apm.operation    None   2342.400000         False
+5   1776025471000000    apm  apm.operation  e433b3f842dc4e525a834701cc603c28  cart::POST /oteldemo.CartService/AddItem  ...  1275.000000  apm@metric_set@apm.metric.apm.operation    None   2342.400000         False
+6   1776025501000000    apm  apm.operation  e433b3f842dc4e525a834701cc603c28  cart::POST /oteldemo.CartService/AddItem  ...  1145.000000  apm@metric_set@apm.metric.apm.operation    None   2342.400000         False
+7   1776025531000000    apm  apm.operation  e433b3f842dc4e525a834701cc603c28  cart::POST /oteldemo.CartService/AddItem  ...  1140.000000  apm@metric_set@apm.metric.apm.operation    None   2342.400000         False
+8   1776025561000000    apm  apm.operation  e433b3f842dc4e525a834701cc603c28  cart::POST /oteldemo.CartService/AddItem  ...  1004.000000  apm@metric_set@apm.metric.apm.operation    None   2342.400000         False
+9   1776025591000000    apm  apm.operation  e433b3f842dc4e525a834701cc603c28  cart::POST /oteldemo.CartService/AddItem  ...   857.000000  apm@metric_set@apm.metric.apm.operation    None   2342.400000         False
+10  1776025621000000    apm  apm.operation  e433b3f842dc4e525a834701cc603c28  cart::POST /oteldemo.CartService/AddItem  ...  1131.000000  apm@metric_set@apm.metric.apm.operation    None   2342.400000         False
+11  1776025651000000    apm  apm.operation  e433b3f842dc4e525a834701cc603c28  cart::POST /oteldemo.CartService/AddItem  ...  1178.000000  apm@metric_set@apm.metric.apm.operation    None   2342.400000         False
+12  1776025681000000    apm  apm.operation  e433b3f842dc4e525a834701cc603c28  cart::POST /oteldemo.CartService/AddItem  ...   962.000000  apm@metric_set@apm.metric.apm.operation    None   2342.400000         False
+13  1776025321000000    apm  apm.operation  e433b3f842dc4e525a834701cc603c28  cart::POST /oteldemo.CartService/AddItem  ...     0.005873  apm@metric_set@apm.metric.apm.operation    None      0.056963         False
+14  1776025351000000    apm  apm.operation  e433b3f842dc4e525a834701cc603c28  cart::POST /oteldemo.CartService/AddItem  ...     0.015822  apm@metric_set@apm.metric.apm.operation    None      0.056963         False
+15  1776025381000000    apm  apm.operation  e433b3f842dc4e525a834701cc603c28  cart::POST /oteldemo.CartService/AddItem  ...     0.030558  apm@metric_set@apm.metric.apm.operation    None      0.056963         False
+16  1776025411000000    apm  apm.operation  e433b3f842dc4e525a834701cc603c28  cart::POST /oteldemo.CartService/AddItem  ...     0.033915  apm@metric_set@apm.metric.apm.operation    None      0.056963         False
+17  1776025441000000    apm  apm.operation  e433b3f842dc4e525a834701cc603c28  cart::POST /oteldemo.CartService/AddItem  ...     0.043692  apm@metric_set@apm.metric.apm.operation    None      0.056963         False
+18  1776025471000000    apm  apm.operation  e433b3f842dc4e525a834701cc603c28  cart::POST /oteldemo.CartService/AddItem  ...     0.058775  apm@metric_set@apm.metric.apm.operation    None      0.056963          True
+19  1776025501000000    apm  apm.operation  e433b3f842dc4e525a834701cc603c28  cart::POST /oteldemo.CartService/AddItem  ...     0.066298  apm@metric_set@apm.metric.apm.operation    None      0.056963          True
+20  1776025531000000    apm  apm.operation  e433b3f842dc4e525a834701cc603c28  cart::POST /oteldemo.CartService/AddItem  ...     0.066145  apm@metric_set@apm.metric.apm.operation    None      0.056963          True
+21  1776025561000000    apm  apm.operation  e433b3f842dc4e525a834701cc603c28  cart::POST /oteldemo.CartService/AddItem  ...     0.052319  apm@metric_set@apm.metric.apm.operation    None      0.056963         False
+22  1776025591000000    apm  apm.operation  e433b3f842dc4e525a834701cc603c28  cart::POST /oteldemo.CartService/AddItem  ...     0.042460  apm@metric_set@apm.metric.apm.operation    None      0.056963         False
+23  1776025621000000    apm  apm.operation  e433b3f842dc4e525a834701cc603c28  cart::POST /oteldemo.CartService/AddItem  ...     0.050255  apm@metric_set@apm.metric.apm.operation    None      0.056963         False
+24  1776025651000000    apm  apm.operation  e433b3f842dc4e525a834701cc603c28  cart::POST /oteldemo.CartService/AddItem  ...     0.050507  apm@metric_set@apm.metric.apm.operation    None      0.056963         False
+25  1776025681000000    apm  apm.operation  e433b3f842dc4e525a834701cc603c28  cart::POST /oteldemo.CartService/AddItem  ...     0.056945  apm@metric_set@apm.metric.apm.operation    None      0.056963         False
+
+[26 rows x 11 columns]
+
+**Note**: The printed pandas DataFrame is truncated due to its size. Only **10 rows** are displayed, which may introduce observation bias due to the incomplete table. If you want to comprehensively understand the details without bias, please ask Executor using `df.head(X)` to display more rows.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:39:04.672[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[6]
+Analysis: The metrics analysis revealed occasional spikes in the `avg_request_latency_seconds` metric for the operation `cart::POST /oteldemo.CartService/AddItem` during the alert time window. These spikes exceeded the global P95 threshold, marking them as anomalies. However, this alone does not confirm the root cause. Further investigation is needed to determine if these anomalies are caused by upstream or downstream services or other factors.
+Instruction: Load the `traces.parquet` file from the directory `rca100/cases/t008` and filter for traces related to the operation `cart::POST /oteldemo.CartService/AddItem` during the alert time window (04:22:01 to 04:28:03 UTC+8). Analyze the traces to identify any upstream or downstream services contributing to the latency spikes.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:39:15.481[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[6]
+### Observation:
+No traces were found for the operation `cart::POST /oteldemo.CartService/AddItem` during the alert time window. This indicates that there is no trace data available to analyze upstream or downstream services contributing to the latency spikes.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+Empty DataFrame
+Columns: [serviceName, spanName, avg_duration_ns]
+Index: []
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:39:24.068[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[7]
+Analysis: No traces were found for the operation `cart::POST /oteldemo.CartService/AddItem` during the alert time window. This limits the ability to analyze upstream or downstream services contributing to the latency spikes. However, the metrics analysis already identified anomalies in the `avg_request_latency_seconds` metric for the affected operation. To further investigate the root cause, logs can be analyzed to identify any errors or unusual patterns during the alert time window.
+Instruction: Load the `logs.parquet` file from the directory `rca100/cases/t008` and filter for logs related to the operation `cart::POST /oteldemo.CartService/AddItem` during the alert time window (04:22:01 to 04:28:03 UTC+8). Analyze the logs for any errors, warnings, or unusual patterns that could explain the latency spikes.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:39:34.737[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[7]
+### Observation:
+No logs were found for the operation `cart::POST /oteldemo.CartService/AddItem` during the alert time window that contained errors, warnings, or unusual patterns. This indicates that there is no log evidence to explain the observed latency spikes.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+Empty DataFrame
+Columns: [content, _time_, _source_, _image_name_, _container_name_, _pod_name_, _namespace_, _pod_uid_, _container_ip_, __topic__, __tag__:__pack_id__, __tag__:__hostname__, __tag__:_node_name_, __tag__:_node_ip_, __tag__:_cluster_id_]
+Index: []
+
+[0 rows x 15 columns]
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:39:39.743[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[8]
+Analysis: The metrics analysis identified anomalies in the `avg_request_latency_seconds` metric for the operation `cart::POST /oteldemo.CartService/AddItem` during the alert time window. However, no traces or logs were found for this operation during the same period, limiting further investigation into upstream or downstream dependencies and potential error patterns. This suggests that the root cause might be localized to the operation itself or its immediate environment, rather than being propagated from other services.
+Instruction: The root cause of the issue is the occasional spikes in the `avg_request_latency_seconds` metric for the operation `cart::POST /oteldemo.CartService/AddItem`, which exceeded the global P95 threshold during the alert time window. These spikes indicate response time jitter, but no further evidence from traces or logs was available to pinpoint external dependencies or errors. The root cause component is the `cart` service, and the reason is likely related to internal latency issues. Further investigation into the service's internal performance or configuration may be required to address the issue.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:39:45.778[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.rca_agent[0m:[36mrun[0m:[36m13[0m - [1mResult: {
+    "root_cause_entities": ["cart"],
+    "root_cause_types": ["threadExhaustion"]
+}[0m
+[32m2026-06-13 09:39:45.784[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m200[0m - [1mTrajectory has been saved to test/monitor/rca100/agent-batch1-gpt-4o/2026-06-13_08-43-09/trajectory/2026-06-13_08-43-09_#7-1.ipynb[0m
+[32m2026-06-13 09:39:45.787[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m204[0m - [1mPrompt has been saved to test/monitor/rca100/agent-batch1-gpt-4o/2026-06-13_08-43-09/prompt/2026-06-13_08-43-09_#7-1.json[0m
+[32m2026-06-13 09:39:45.792[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m231[0m - [1mPrediction: {
+    "root_cause_entities": ["cart"],
+    "root_cause_types": ["threadExhaustion"]
+}[0m
+[32m2026-06-13 09:39:45.793[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m232[0m - [1mGround Truth: {"root_cause_entities": ["cn-hongkong.10.0.1.56"], "root_cause_types": ["nodeCpuHigh"]}[0m
+[32m2026-06-13 09:39:45.794[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m233[0m - [1mPassed: [][0m
+[32m2026-06-13 09:39:45.795[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m234[0m - [1mFailed: ["entities: expected {'cn-hongkong.10.0.1.56'}, got {'cart'}", "types: expected {'nodeCpuHigh'}, got {'threadExhaustion'}"][0m
+[32m2026-06-13 09:39:45.795[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m235[0m - [1mScore: 0.0[0m

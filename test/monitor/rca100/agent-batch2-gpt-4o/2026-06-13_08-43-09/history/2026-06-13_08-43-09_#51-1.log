@@ -1,0 +1,202 @@
+[32m2026-06-13 10:34:07.747[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.rca_agent[0m:[36mrun[0m:[36m11[0m - [1mObjective: [Task directory: rca100/cases/t052]
+<code vibeops_object type="alert_event">frontend异常告警<alert_event event_id="e0f9c6b93ae776e16f5ff62a8e9b2734" trans_id="3kc769k1j17af1v5bmndma2212" rule_id="d4107ac6-2a37-4167-9059-16156c90f2bf" rule_name="frontend异常告警" entity_id="d5479ffd165e089a67b3d4eeb8519fb7" entity_name="frontend::POST /api/checkout" entity_type="apm.operation" entity_domain="apm" alert_time="2026-04-22T23:59:05+08:00" /></code> 帮我分析下根因。[0m
+[32m2026-06-13 10:34:12.133[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[1]
+Analysis: None
+Instruction: Start by loading the `task.json` file from the directory `rca100/cases/t052` to understand the alert context, including the alert time window, entity details, and prompt text.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:34:16.625[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[1]
+### Observation:
+The alert context indicates that the issue occurred in the `frontend` service, specifically in the operation `POST /api/checkout`. The alert was triggered on April 22, 2026, at 23:59:05 (UTC+8). The time window for the incident spans from April 22, 2026, 23:56:01.980405 to April 23, 2026, 00:01:05 (UTC+8). The user has requested an analysis of the root cause of this anomaly.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+{'task_id': 't052', 'task_version': '1.0', 'alert_event_id': '3kc769k1j17af1v5bmndma2212', 'alert_title': 'frontend异常告警', 'alert_trigger_time': '2026-04-22T23:59:05+08:00', 'alert_window': {'start': '2026-04-22T23:56:01.980405+08:00', 'end': '2026-04-23T00:01:05+08:00'}, 'alert_entity': {'entity_id': None, 'entity_name': 'frontend::POST /api/checkout', 'entity_type': None, 'entity_domain': None}, 'prompt_text': '<code vibeops_object type="alert_event">frontend异常告警<alert_event event_id="e0f9c6b93ae776e16f5ff62a8e9b2734" trans_id="3kc769k1j17af1v5bmndma2212" rule_id="d4107ac6-2a37-4167-9059-16156c90f2bf" rule_name="frontend异常告警" entity_id="d5479ffd165e089a67b3d4eeb8519fb7" entity_name="frontend::POST /api/checkout" entity_type="apm.operation" entity_domain="apm" alert_time="2026-04-22T23:59:05+08:00" /></code> 帮我分析下根因。', 'workspace': 'rca-benchmark', 'region_id': 'cn-hongkong', 'available_modalities': ['metrics', 'logs', 'traces', 'events', 'alerts', 'topology'], 'scoring_note': 'Output contract (prediction_schema.json) and fault taxonomy (taxonomy.json) will be published in a follow-up release.'}
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:34:20.760[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[2]
+Analysis: The alert context indicates that the issue is related to the `frontend` service, specifically the operation `POST /api/checkout`. The time window for the incident is from April 22, 2026, 23:56:01.980405 to April 23, 2026, 00:01:05 (UTC+8). The next step is to analyze the topology to understand the service dependency graph and identify the relationships between the `frontend` service and other components.
+Instruction: Load the `topology.json` file from the directory `rca100/cases/t052` to understand the service dependency graph, including entities and their relationships.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:34:23.310[0m | [33m[1mWARNING [0m | [36mrca.baseline.rca_agent.executor[0m:[36mexecute_act[0m:[36m94[0m - [33m[1mToken length exceeds the limit: 53921[0m
+[32m2026-06-13 10:34:25.766[0m | [33m[1mWARNING [0m | [36mrca.baseline.rca_agent.executor[0m:[36mexecute_act[0m:[36m94[0m - [33m[1mToken length exceeds the limit: 53921[0m
+[32m2026-06-13 10:34:25.767[0m | [31m[1mERROR   [0m | [36mrca.baseline.rca_agent.executor[0m:[36mexecute_act[0m:[36m133[0m - [31m[1mMax try reached. Please check the history. Time cost: 0:00:05.006165[0m
+[32m2026-06-13 10:34:25.767[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[2]
+### Observation:
+The Executor failed to complete the instruction, please re-write a new instruction for Executor.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:34:28.685[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[3]
+Analysis: The previous attempt to load the `topology.json` file failed. This file is crucial for understanding the service dependency graph and identifying relationships between the `frontend` service and other components. Without this information, it will be challenging to trace fault propagation and identify the root cause.
+Instruction: Retry loading the `topology.json` file from the directory `rca100/cases/t052`. Ensure that the file exists and is accessible, and parse its contents to extract the entities and edges representing the service dependency graph.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:34:31.511[0m | [33m[1mWARNING [0m | [36mrca.baseline.rca_agent.executor[0m:[36mexecute_act[0m:[36m94[0m - [33m[1mToken length exceeds the limit: 53586[0m
+[32m2026-06-13 10:34:35.915[0m | [33m[1mWARNING [0m | [36mrca.baseline.rca_agent.executor[0m:[36mexecute_act[0m:[36m94[0m - [33m[1mToken length exceeds the limit: 53586[0m
+[32m2026-06-13 10:34:35.916[0m | [31m[1mERROR   [0m | [36mrca.baseline.rca_agent.executor[0m:[36mexecute_act[0m:[36m133[0m - [31m[1mMax try reached. Please check the history. Time cost: 0:00:07.229617[0m
+[32m2026-06-13 10:34:35.916[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[3]
+### Observation:
+The Executor failed to complete the instruction, please re-write a new instruction for Executor.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:34:42.726[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[4]
+Analysis: The previous attempts to load the `topology.json` file failed, which is critical for understanding the service dependency graph. Without this, it is challenging to trace fault propagation. However, we can proceed with metrics analysis to identify potential anomalies in the `frontend` service and its operation `POST /api/checkout` during the alert time window.
+Instruction: Load the `metrics.parquet` file from the directory `rca100/cases/t052` and list all available KPIs for the `frontend` service and its operation `POST /api/checkout`. This will help identify which metrics are relevant for anomaly detection.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:34:50.774[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[4]
+### Observation:
+The available KPIs for the `frontend` service and its operation `POST /api/checkout` include: `error_count`, `slow_count`, `request_count`, `avg_request_latency_seconds`, `cpu`, `error`, `latency`, `mem`, `slow`, `workload`, and `error_rate`. These metrics are relevant for detecting anomalies in the service's performance.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+['error_count' 'slow_count' 'request_count' 'avg_request_latency_seconds'
+ 'cpu' 'error' 'latency' 'mem' 'slow' 'workload' 'error_rate']
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:34:53.649[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[5]
+Analysis: The available KPIs for the `frontend` service and its operation `POST /api/checkout` have been identified. These include key metrics such as `error_count`, `slow_count`, `request_count`, `avg_request_latency_seconds`, `cpu`, `error`, `latency`, `mem`, `slow`, `workload`, and `error_rate`. These metrics will be used to detect anomalies during the alert time window. The next step is to preprocess the data by aggregating each KPI for the `frontend` service and calculating global thresholds (e.g., P95) for anomaly detection.
+Instruction: Aggregate each KPI for the `frontend` service and its operation `POST /api/checkout` from the `metrics.parquet` file in the directory `rca100/cases/t052`. Then calculate the global P95 threshold for each KPI across the entire dataset.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:35:01.086[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[5]
+### Observation:
+The global P95 thresholds for the KPIs of the `frontend` service and its operation `POST /api/checkout` are as follows:
+- `avg_request_latency_seconds`: 0.667 seconds
+- `cpu`: 0.775
+- `error`: 16,307.6
+- `error_count`: 9,237.25
+- `error_rate`: 1.0
+- `latency`: 0.093 seconds
+- `mem`: 284,476,900 bytes
+- `request_count`: 14,042.8
+- `slow`: 682.65
+- `slow_count`: 5.75
+- `workload`: 113,298.4
+
+These thresholds represent the 95th percentile values across the entire dataset for each KPI.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+metric  p95_threshold
+0   avg_request_latency_seconds   6.670431e-01
+1                           cpu   7.757387e-01
+2                         error   1.630760e+04
+3                   error_count   9.237250e+03
+4                    error_rate   1.000000e+00
+5                       latency   9.313853e-02
+6                           mem   2.844769e+08
+7                 request_count   1.404280e+04
+8                          slow   6.826479e+02
+9                    slow_count   5.750000e+00
+10                     workload   1.132984e+05
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:35:04.499[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[6]
+Analysis: The global P95 thresholds for the KPIs of the `frontend` service and its operation `POST /api/checkout` have been calculated. These thresholds will be used to detect anomalies during the alert time window. The next step is to filter the metrics data to include only the time window of the incident (April 22, 2026, 23:56:01.980405 to April 23, 2026, 00:01:05 UTC+8) and identify any anomalies that exceed the P95 thresholds.
+Instruction: Filter the metrics data for the `frontend` service and its operation `POST /api/checkout` to include only the time window from April 22, 2026, 23:56:01.980405 to April 23, 2026, 00:01:05 (UTC+8). Identify any anomalies where the KPI values exceed the global P95 thresholds calculated earlier.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:35:11.329[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[6]
+### Observation:
+During the alert time window, anomalies were detected in the `frontend` service and its operation `POST /api/checkout`. Specifically:
+- The `error_count` metric for the operation exceeded its P95 threshold of 9,237.25, reaching a value of 9,397.
+- The `error` metric for the service exceeded its P95 threshold of 16,307.6 multiple times, with values ranging from 16,960 to 18,794.
+
+These anomalies indicate a significant increase in errors during the specified time window.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+time domain          entity_set                         entity_id                   entity_name       metric    value                            metric_set_id service  p95_threshold
+2   1776873451000000    apm       apm.operation  d5479ffd165e089a67b3d4eeb8519fb7  frontend::POST /api/checkout  error_count   9397.0  apm@metric_set@apm.metric.apm.operation    None        9237.25
+37  1776873421000000    apm  apm.service.legacy                                                        frontend        error  17720.0                                     None    None       16307.60
+43  1776873451000000    apm  apm.service.legacy                                                        frontend        error  18794.0                                     None    None       16307.60
+49  1776873481000000    apm  apm.service.legacy                                                        frontend        error  18366.0                                     None    None       16307.60
+55  1776873511000000    apm  apm.service.legacy                                                        frontend        error  18134.0                                     None    None       16307.60
+61  1776873541000000    apm  apm.service.legacy                                                        frontend        error  18368.0                                     None    None       16307.60
+67  1776873571000000    apm  apm.service.legacy                                                        frontend        error  18036.0                                     None    None       16307.60
+73  1776873601000000    apm  apm.service.legacy                                                        frontend        error  16960.0                                     None    None       16307.60
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:35:15.697[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[7]
+Analysis: Anomalies were detected in the `frontend` service and its operation `POST /api/checkout` during the alert time window. The `error_count` and `error` metrics exceeded their respective P95 thresholds, indicating a significant increase in errors. These anomalies suggest a fault in the `frontend` service, but further analysis is needed to confirm whether this is the root cause or if the issue originated from an upstream or downstream service.
+Instruction: Load the `traces.parquet` file from the directory `rca100/cases/t052` and filter the traces for the `frontend` service and its operation `POST /api/checkout` during the alert time window (April 22, 2026, 23:56:01.980405 to April 23, 2026, 00:01:05 UTC+8). Identify any traces with errors (e.g., `statusCode` != 0 or `statusMessage` indicating an error) and analyze the call chain to determine if the fault originated from the `frontend` service or an upstream/downstream service.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:35:25.315[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[7]
+### Observation:
+During the alert time window, 2,063 error traces were identified for the `frontend` service and its operation `POST /api/checkout`. These traces indicate that errors occurred during this operation. To determine whether the fault originated from the `frontend` service or an upstream/downstream service, further analysis of the call chain in these traces is required.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+traceId            spanId      parentSpanId kind            spanName  ...  events  __topic__      __tag__:__pack_id__    ip links
+320326  20e2871869bf4f7b2dfa6defe7b96247  e8f9b04262692b7c  fd61ab3f34a3497f    2  POST /api/checkout  ...    None             8170112A405499A8-7B2A8B  None  None
+320328  625e0a383e9fe7b3d2272e0f7c5f1a98  6b3a47db6b424cbc  d880e7bb5e54ce78    2  POST /api/checkout  ...    None             8170112A405499A8-7B2A8B  None  None
+320352  938869addc9d26c5c26f06baab80b518  ef27269fe80e83b1  7f44914cdfa6242a    2  POST /api/checkout  ...    None             8170112A405499A8-7B2A8B  None  None
+320356  2a6712dae3732e86698fd6cbc379f814  c919c2ffa1d35fe8  2a4f8af89cca3967    2  POST /api/checkout  ...    None             8170112A405499A8-7B2A8B  None  None
+320362  9d374413231a882d03e5b318612bfda0  2d88db2de90e91af  8d814eed13239cbb    2  POST /api/checkout  ...    None             8170112A405499A8-7B2A8B  None  None
+...                                  ...               ...               ...  ...                 ...  ...     ...        ...                      ...   ...   ...
+428292  091ee1aba76e56e898ab79aa2cdcfe64  116ad6bcbc7eeecc  8434ecbbcb3bf5ce    2  POST /api/checkout  ...    None             98E4D50FB79EE190-7C0EA1  None  None
+431943  0e2e83b5e1067c1f47978c692f83c7c7  ff462cfbd60d7ab7  f07595c17296a1fc    2  POST /api/checkout  ...    None             98E4D50FB79EE190-7C0E9F  None  None
+432114  3815751e6c5c46faa960636209f0c314  f11fcd443de21edb  f21e9d1ca1422fa5    2  POST /api/checkout  ...    None             98E4D50FB79EE190-7C0E9F  None  None
+432118  bc0ba2898fee9c9e692631b2c29c0ac6  0f23f4f60f89ec22  65f6a23711f0556f    2  POST /api/checkout  ...    None             98E4D50FB79EE190-7C0E9F  None  None
+500006  3616847a4924f370a9d791400e36ee64  9b67fa3323be237e  850771c607b48936    2  POST /api/checkout  ...    None             FBB43E70BE3DFACC-7BEFCA  None  None
+
+[2063 rows x 21 columns]
+
+**Note**: The printed pandas DataFrame is truncated due to its size. Only **10 rows** are displayed, which may introduce observation bias due to the incomplete table. If you want to comprehensively understand the details without bias, please ask Executor using `df.head(X)` to display more rows.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:35:31.433[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[8]
+Analysis: The trace analysis revealed 2,063 error traces for the `frontend` service and its operation `POST /api/checkout` during the alert time window. These traces confirm that errors occurred during this operation. To determine whether the fault originated from the `frontend` service or an upstream/downstream service, it is necessary to analyze the call chain within these traces to identify the most downstream faulty service.
+Instruction: Analyze the call chain of the error traces for the `frontend` service and its operation `POST /api/checkout` during the alert time window. Identify the most downstream faulty service in the call chain by checking the `spanName`, `serviceName`, and `statusCode` fields in the traces.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:35:43.418[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[8]
+### Observation:
+The analysis of the call chain indicates that all 2,063 error traces originated from the `frontend` service and its operation `POST /api/checkout`. No downstream services were identified as faulty, suggesting that the issue is isolated to the `frontend` service itself.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+serviceName            spanName  error_count
+0    frontend  POST /api/checkout         2063
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:35:48.166[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[9]
+Analysis: The trace analysis confirms that all 2,063 error traces originated from the `frontend` service and its operation `POST /api/checkout`. No downstream services were identified as faulty, indicating that the issue is isolated to the `frontend` service. However, the exact reason for the fault (e.g., resource exhaustion, code defect, etc.) is still unclear. To further localize the root cause, log analysis is required to identify any specific errors or anomalies in the `frontend` service during the alert time window.
+Instruction: Load the `logs.parquet` file from the directory `rca100/cases/t052` and filter the logs for the `frontend` service during the alert time window (April 22, 2026, 23:56:01.980405 to April 23, 2026, 00:01:05 UTC+8). Search for error-related entries by filtering the `content` field for keywords such as 'error', 'exception', or 'failure'.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:35:56.959[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[9]
+### Observation:
+No error-related log entries were found for the `frontend` service during the alert time window. This suggests that the issue may not have been explicitly logged as an error, or the logs do not contain relevant information for diagnosing the problem.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+Empty DataFrame
+Columns: [content, _time_, _source_, _pod_name_, _namespace_, _pod_uid_, _container_ip_, _image_name_, _container_name_, __topic__, __tag__:__pack_id__, __tag__:__hostname__, __tag__:_node_name_, __tag__:_node_ip_, __tag__:_cluster_id_]
+Index: []
+
+[0 rows x 15 columns]
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:36:01.041[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[10]
+Analysis: The log analysis did not reveal any error-related entries for the `frontend` service during the alert time window. This suggests that the issue may not have been explicitly logged or that the logs do not contain relevant information for diagnosing the problem. However, the metrics and trace analysis have already confirmed that the `frontend` service and its operation `POST /api/checkout` experienced significant anomalies and errors during the alert time window. No downstream services were identified as faulty, indicating that the issue is isolated to the `frontend` service itself.
+Instruction: The root cause of the issue is the `frontend` service, specifically its operation `POST /api/checkout`. The anomalies in the `error_count` and `error` metrics, along with the error traces, confirm that the fault originated from this service. The root cause reason is likely related to an internal issue within the `frontend` service, such as a code defect or resource exhaustion, but further investigation into the service's internal behavior would be required to pinpoint the exact cause.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:36:06.662[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.rca_agent[0m:[36mrun[0m:[36m13[0m - [1mResult: {
+    "root_cause_entities": ["frontend"],
+    "root_cause_types": ["codeDefect"]
+}[0m
+[32m2026-06-13 10:36:06.669[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m200[0m - [1mTrajectory has been saved to test/monitor/rca100/agent-batch2-gpt-4o/2026-06-13_08-43-09/trajectory/2026-06-13_08-43-09_#51-1.ipynb[0m
+[32m2026-06-13 10:36:06.671[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m204[0m - [1mPrompt has been saved to test/monitor/rca100/agent-batch2-gpt-4o/2026-06-13_08-43-09/prompt/2026-06-13_08-43-09_#51-1.json[0m
+[32m2026-06-13 10:36:06.674[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m231[0m - [1mPrediction: {
+    "root_cause_entities": ["frontend"],
+    "root_cause_types": ["codeDefect"]
+}[0m
+[32m2026-06-13 10:36:06.675[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m232[0m - [1mGround Truth: {"root_cause_entities": ["payment"], "root_cause_types": ["httpError5xx"]}[0m
+[32m2026-06-13 10:36:06.675[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m233[0m - [1mPassed: [][0m
+[32m2026-06-13 10:36:06.675[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m234[0m - [1mFailed: ["entities: expected {'payment'}, got {'frontend'}", "types: expected {'httpError5xx'}, got {'codeDefect'}"][0m
+[32m2026-06-13 10:36:06.676[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m235[0m - [1mScore: 0.0[0m

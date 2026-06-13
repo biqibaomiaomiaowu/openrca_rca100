@@ -1,0 +1,184 @@
+[32m2026-06-13 11:19:33.075[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.rca_agent[0m:[36mrun[0m:[36m11[0m - [1mObjective: [Task directory: rca100/cases/t024]
+<code vibeops_object type="alert_event">inventory错误次数突增<alert_event event_id="f117cea2bc1c5c47816e78c6fd7573c2" trans_id="sfhu5c5e6t7sfeo75j5he606o5" rule_id="663b6c72-c01c-49e2-b1a7-805ae65925b3" rule_name="inventory错误次数突增" /></code>
+
+帮我分析下根因。[0m
+[32m2026-06-13 11:19:37.628[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[1]
+Analysis: None
+Instruction: Load the `task.json` file from the provided task directory `rca100/cases/t024` to understand the alert context, including the alert entity, time window, and prompt text.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 11:19:41.837[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[1]
+### Observation:
+The alert is related to the operation `inventory::/api/v1/inventory/{productId}` in the APM domain. The alert time window is from `2026-04-04 22:37:09` to `2026-04-04 22:45:01` (UTC+8). The prompt text indicates a sudden increase in error count for the `inventory` operation, and the user is requesting an analysis of the root cause.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+({'entity_id': '162799adab6799326676266a2c96cf3e', 'entity_name': 'inventory::/api/v1/inventory/{productId}', 'entity_type': 'apm.operation', 'entity_domain': 'apm'}, {'start': '2026-04-04T22:37:09.273091+08:00', 'end': '2026-04-04T22:45:01+08:00'}, '<code vibeops_object type="alert_event">inventory错误次数突增<alert_event event_id="f117cea2bc1c5c47816e78c6fd7573c2" trans_id="sfhu5c5e6t7sfeo75j5he606o5" rule_id="663b6c72-c01c-49e2-b1a7-805ae65925b3" rule_name="inventory错误次数突增" /></code>\n\n帮我分析下根因。')
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 11:19:45.465[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[2]
+Analysis: The alert is related to the operation `inventory::/api/v1/inventory/{productId}` in the APM domain, with a time window from `2026-04-04 22:37:09` to `2026-04-04 22:45:01` (UTC+8). The alert indicates a sudden increase in error count for the `inventory` operation, and the user is requesting an analysis of the root cause. The next step is to analyze the topology to understand the service dependency graph and identify potential upstream/downstream services.
+Instruction: Load the `topology.json` file from the task directory `rca100/cases/t024` to understand the service dependency graph, including entities and their relationships.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 11:19:48.646[0m | [33m[1mWARNING [0m | [36mrca.baseline.rca_agent.executor[0m:[36mexecute_act[0m:[36m94[0m - [33m[1mToken length exceeds the limit: 50034[0m
+[32m2026-06-13 11:19:53.177[0m | [33m[1mWARNING [0m | [36mrca.baseline.rca_agent.executor[0m:[36mexecute_act[0m:[36m94[0m - [33m[1mToken length exceeds the limit: 50034[0m
+[32m2026-06-13 11:19:53.177[0m | [31m[1mERROR   [0m | [36mrca.baseline.rca_agent.executor[0m:[36mexecute_act[0m:[36m133[0m - [31m[1mMax try reached. Please check the history. Time cost: 0:00:07.711290[0m
+[32m2026-06-13 11:19:53.177[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[2]
+### Observation:
+The Executor failed to complete the instruction, please re-write a new instruction for Executor.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 11:19:56.932[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[3]
+Analysis: The Executor failed to load the `topology.json` file, which is essential for understanding the service dependency graph and identifying upstream/downstream services related to the `inventory` operation. Without this information, it is difficult to trace fault propagation or narrow down the root cause. The next step is to retry loading the `topology.json` file, ensuring the correct file path and handling potential errors.
+Instruction: Retry loading the `topology.json` file from the task directory `rca100/cases/t024`. Ensure the file path is correct and handle any potential errors during the loading process.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 11:20:00.853[0m | [33m[1mWARNING [0m | [36mrca.baseline.rca_agent.executor[0m:[36mexecute_act[0m:[36m94[0m - [33m[1mToken length exceeds the limit: 50380[0m
+[32m2026-06-13 11:20:04.795[0m | [33m[1mWARNING [0m | [36mrca.baseline.rca_agent.executor[0m:[36mexecute_act[0m:[36m94[0m - [33m[1mToken length exceeds the limit: 50380[0m
+[32m2026-06-13 11:20:04.796[0m | [31m[1mERROR   [0m | [36mrca.baseline.rca_agent.executor[0m:[36mexecute_act[0m:[36m133[0m - [31m[1mMax try reached. Please check the history. Time cost: 0:00:07.862414[0m
+[32m2026-06-13 11:20:04.796[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[3]
+### Observation:
+The Executor failed to complete the instruction, please re-write a new instruction for Executor.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 11:20:10.672[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[4]
+Analysis: The Executor has failed to load the `topology.json` file multiple times. This file is critical for understanding the service dependency graph and identifying upstream/downstream services related to the `inventory` operation. Without it, tracing fault propagation and narrowing down the root cause will be challenging. As the next step, we should proceed with analyzing the metrics data to identify anomalies in the `inventory` operation and its related components during the alert time window.
+Instruction: Load the `metrics.parquet` file from the task directory `rca100/cases/t024` and list all available KPIs and their corresponding entity sets. This will help us identify the relevant metrics for the `inventory` operation and related components.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 11:20:15.997[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[4]
+### Observation:
+The `metrics.parquet` file contains various KPIs across multiple entity sets. Relevant KPIs for the `inventory` operation (under `apm.operation`) include `error_rate`. Other entity sets include `k8s.node`, `apm.service.legacy`, and `apm.instance`, with KPIs such as `node_memory_usage_rate`, `workload`, `error`, and `slow`.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+metric          entity_set
+0       node_not_ready_status            k8s.node
+2100        node_ready_status            k8s.node
+4200     node_disk_usage_rate            k8s.node
+4760   node_memory_usage_rate            k8s.node
+6300   node_pod_running_count            k8s.node
+...                       ...                 ...
+78274                workload  apm.service.legacy
+78280                   error  apm.service.legacy
+78283                    slow  apm.service.legacy
+88491              error_rate       apm.operation
+88575              error_rate        apm.instance
+
+[63 rows x 2 columns]
+
+**Note**: The printed pandas DataFrame is truncated due to its size. Only **10 rows** are displayed, which may introduce observation bias due to the incomplete table. If you want to comprehensively understand the details without bias, please ask Executor using `df.head(X)` to display more rows.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 11:20:20.593[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[5]
+Analysis: The `metrics.parquet` file contains various KPIs across multiple entity sets. Relevant KPIs for the `inventory` operation under `apm.operation` include `error_rate`. Other entity sets such as `k8s.node`, `apm.service.legacy`, and `apm.instance` also have KPIs like `node_memory_usage_rate`, `workload`, `error`, and `slow`. To proceed, we need to calculate the global threshold (e.g., P95) for the `error_rate` KPI of the `inventory` operation across the entire dataset before filtering the data within the alert time window.
+Instruction: Filter the `metrics.parquet` data to extract the `error_rate` KPI for the `inventory` operation (entity_set = 'apm.operation' and entity_name = 'inventory::/api/v1/inventory/{productId}'). Then calculate the global P95 threshold for this KPI across the entire dataset.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 11:20:27.171[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[5]
+### Observation:
+The global P95 threshold for the `error_rate` KPI of the `inventory` operation is approximately 0.5084. This means that 95% of the `error_rate` values across the dataset are below this threshold.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+0.508402908699165
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 11:20:37.419[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[6]
+Analysis: The global P95 threshold for the `error_rate` KPI of the `inventory` operation has been calculated as approximately 0.5084. This threshold will help identify anomalies during the alert time window. The next step is to filter the `error_rate` data for the `inventory` operation within the alert time window (`2026-04-04 22:37:09` to `2026-04-04 22:45:01` UTC+8) and check for anomalies exceeding the threshold.
+Instruction: Filter the `error_rate` data for the `inventory` operation (entity_set = 'apm.operation' and entity_name = 'inventory::/api/v1/inventory/{productId}') to include only the alert time window (`2026-04-04 22:37:09` to `2026-04-04 22:45:01` UTC+8). Identify any anomalies where the `error_rate` exceeds the global P95 threshold of 0.5084.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 11:20:43.976[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[6]
+### Observation:
+During the alert time window (`2026-04-04 22:37:09` to `2026-04-04 22:45:01` UTC+8), an anomaly was detected for the `inventory` operation (`inventory::/api/v1/inventory/{productId}`). The `error_rate` exceeded the global P95 threshold of 0.5084, reaching a value of 0.5443.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+time domain     entity_set                         entity_id                               entity_name      metric     value                            metric_set_id service
+88492  1775313759000000    apm  apm.operation  162799adab6799326676266a2c96cf3e  inventory::/api/v1/inventory/{productId}  error_rate  0.544304  apm@metric_set@apm.metric.apm.operation    None
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 11:20:47.663[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[7]
+Analysis: During the alert time window, an anomaly was detected for the `inventory` operation where the `error_rate` exceeded the global P95 threshold of 0.5084, reaching a value of 0.5443. This confirms that the `inventory` operation experienced a fault. To further localize the root cause, we need to analyze distributed traces to identify whether the fault originated from the `inventory` operation itself or propagated from upstream/downstream services.
+Instruction: Load the `traces.parquet` file from the task directory `rca100/cases/t024` and filter traces related to the `inventory` operation (`spanName` containing 'inventory::/api/v1/inventory/{productId}'). Analyze the traces to identify upstream/downstream services and determine if the fault originated from the `inventory` operation or propagated from another service.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 11:20:56.320[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[7]
+### Observation:
+No traces were found related to the `inventory` operation (`inventory::/api/v1/inventory/{productId}`) in the `traces.parquet` file. This means there is no trace data available to analyze upstream or downstream services or to determine if the fault originated from the `inventory` operation or propagated from another service.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+Empty DataFrame
+Columns: [traceId, spanId, parentSpanId, serviceName, duration, statusCode, statusMessage]
+Index: []
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 11:21:00.257[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[8]
+Analysis: No traces were found related to the `inventory` operation in the `traces.parquet` file. This limits our ability to analyze upstream or downstream services and determine if the fault originated from the `inventory` operation or propagated from another service. Since the `error_rate` anomaly has already been identified, the next step is to analyze the logs to gather more information about potential errors or issues during the alert time window.
+Instruction: Load the `logs.parquet` file from the task directory `rca100/cases/t024` and filter logs related to the `inventory` operation (e.g., logs containing 'inventory' in the `content` field). Focus on logs within the alert time window (`2026-04-04 22:37:09` to `2026-04-04 22:45:01` UTC+8) to identify any error messages or anomalies.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 11:21:08.998[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[8]
+### Observation:
+During the alert time window (`2026-04-04 22:37:09` to `2026-04-04 22:45:01` UTC+8), 5,500 logs related to the `inventory` operation were identified. These logs contain various debug and informational messages, but due to the large volume, further filtering or analysis may be needed to pinpoint specific error messages or anomalies.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+content                              _time_ _source_ _container_ip_                                       _image_name_  ...     __tag__:__pack_id__    __tag__:__hostname__     __tag__:_node_name_ __tag__:_node_ip_               __tag__:_cluster_id_
+401277  2026-04-04 14:37:09 [http-nio-9090-exec-9] DEB... 2026-04-04 22:37:09.273307781+08:00   stdout    10.0.16.184  o11y-demo-registry-vpc.cn-hongkong.cr.aliyuncs...  ...  507612B336A4CBE1-11416   cn-hongkong.10.0.2.71   cn-hongkong.10.0.2.71         10.0.2.71  cfbbc0eabc19d43c0a6fb6889b4451ad0
+401279  2026-04-04 14:37:09 [http-nio-9090-exec-27] DE... 2026-04-04 22:37:09.332340768+08:00   stdout    10.0.16.184  o11y-demo-registry-vpc.cn-hongkong.cr.aliyuncs...  ...  507612B336A4CBE1-11416   cn-hongkong.10.0.2.71   cn-hongkong.10.0.2.71         10.0.2.71  cfbbc0eabc19d43c0a6fb6889b4451ad0
+401280  2026-04-04 14:37:09 [http-nio-9090-exec-27] DE... 2026-04-04 22:37:09.332387238+08:00   stdout    10.0.16.184  o11y-demo-registry-vpc.cn-hongkong.cr.aliyuncs...  ...  507612B336A4CBE1-11416   cn-hongkong.10.0.2.71   cn-hongkong.10.0.2.71         10.0.2.71  cfbbc0eabc19d43c0a6fb6889b4451ad0
+401281  2026-04-04 14:37:09 [http-nio-9090-exec-27] IN... 2026-04-04 22:37:09.332428383+08:00   stdout    10.0.16.184  o11y-demo-registry-vpc.cn-hongkong.cr.aliyuncs...  ...  507612B336A4CBE1-11416   cn-hongkong.10.0.2.71   cn-hongkong.10.0.2.71         10.0.2.71  cfbbc0eabc19d43c0a6fb6889b4451ad0
+401282  2026-04-04 14:37:09 [http-nio-9090-exec-27] IN... 2026-04-04 22:37:09.332842470+08:00   stdout    10.0.16.184  o11y-demo-registry-vpc.cn-hongkong.cr.aliyuncs...  ...  507612B336A4CBE1-11416   cn-hongkong.10.0.2.71   cn-hongkong.10.0.2.71         10.0.2.71  cfbbc0eabc19d43c0a6fb6889b4451ad0
+...                                                   ...                                 ...      ...            ...                                                ...  ...                     ...                     ...                     ...               ...                                ...
+429983  2026-04-04 14:37:15 [http-nio-9090-exec-5] DEB... 2026-04-04 22:37:15.628494444+08:00   stdout    10.0.16.157  o11y-demo-registry-vpc.cn-hongkong.cr.aliyuncs...  ...  7BFF857EAC0FEDE2-113B3  cn-hongkong.10.0.16.64  cn-hongkong.10.0.16.64        10.0.16.64  cfbbc0eabc19d43c0a6fb6889b4451ad0
+429985  2026-04-04 14:37:15 [http-nio-9090-exec-6] DEB... 2026-04-04 22:37:15.636982284+08:00   stdout    10.0.16.157  o11y-demo-registry-vpc.cn-hongkong.cr.aliyuncs...  ...  7BFF857EAC0FEDE2-113B3  cn-hongkong.10.0.16.64  cn-hongkong.10.0.16.64        10.0.16.64  cfbbc0eabc19d43c0a6fb6889b4451ad0
+429986  2026-04-04 14:37:15 [http-nio-9090-exec-6] DEB... 2026-04-04 22:37:15.636998882+08:00   stdout    10.0.16.157  o11y-demo-registry-vpc.cn-hongkong.cr.aliyuncs...  ...  7BFF857EAC0FEDE2-113B3  cn-hongkong.10.0.16.64  cn-hongkong.10.0.16.64        10.0.16.64  cfbbc0eabc19d43c0a6fb6889b4451ad0
+429987  2026-04-04 14:37:15 [http-nio-9090-exec-6] INF... 2026-04-04 22:37:15.637070238+08:00   stdout    10.0.16.157  o11y-demo-registry-vpc.cn-hongkong.cr.aliyuncs...  ...  7BFF857EAC0FEDE2-113B3  cn-hongkong.10.0.16.64  cn-hongkong.10.0.16.64        10.0.16.64  cfbbc0eabc19d43c0a6fb6889b4451ad0
+429988  2026-04-04 14:37:15 [http-nio-9090-exec-6] INF... 2026-04-04 22:37:15.637402051+08:00   stdout    10.0.16.157  o11y-demo-registry-vpc.cn-hongkong.cr.aliyuncs...  ...  7BFF857EAC0FEDE2-113B3  cn-hongkong.10.0.16.64  cn-hongkong.10.0.16.64        10.0.16.64  cfbbc0eabc19d43c0a6fb6889b4451ad0
+
+[5500 rows x 15 columns]
+
+**Note**: The printed pandas DataFrame is truncated due to its size. Only **10 rows** are displayed, which may introduce observation bias due to the incomplete table. If you want to comprehensively understand the details without bias, please ask Executor using `df.head(X)` to display more rows.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 11:21:12.595[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[9]
+Analysis: During the alert time window, 5,500 logs related to the `inventory` operation were identified. These logs contain various debug and informational messages. However, due to the large volume, further filtering or analysis is required to pinpoint specific error messages or anomalies. Since the `error_rate` anomaly has already been identified, the logs can provide additional evidence to localize the root cause reason.
+Instruction: Filter the 5,500 logs related to the `inventory` operation to identify logs containing keywords such as 'error', 'exception', or 'fail' in the `content` field. Focus on these logs to determine if they provide insights into the root cause of the anomaly.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 11:21:20.521[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[9]
+### Observation:
+No logs containing the keywords 'error', 'exception', or 'fail' were found in the 5,500 logs related to the `inventory` operation during the alert time window. This indicates that there are no explicit error messages or failures recorded in the logs to provide insights into the root cause of the anomaly.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+Empty DataFrame
+Columns: [content, _time_, _source_, _container_ip_, _image_name_, _container_name_, _pod_name_, _namespace_, _pod_uid_, __topic__, __tag__:__pack_id__, __tag__:__hostname__, __tag__:_node_name_, __tag__:_node_ip_, __tag__:_cluster_id_]
+Index: []
+
+[0 rows x 15 columns]
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 11:21:25.830[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[10]
+Analysis: No logs containing keywords such as 'error', 'exception', or 'fail' were found in the 5,500 logs related to the `inventory` operation during the alert time window. This indicates that there are no explicit error messages or failures recorded in the logs to provide insights into the root cause of the anomaly. However, the anomaly in the `error_rate` metric for the `inventory` operation has already been identified, and no traces or logs provide further evidence of fault propagation or upstream/downstream issues. Based on the available data, the root cause appears to be localized to the `inventory` operation itself.
+Instruction: The root cause of the issue is the `inventory` operation (`inventory::/api/v1/inventory/{productId}`) experiencing a sudden increase in `error_rate` during the alert time window. The anomaly exceeded the global P95 threshold, reaching a value of 0.5443. No traces or logs indicate fault propagation or upstream/downstream issues, suggesting the fault is localized to the `inventory` operation itself. The root cause reason is likely related to application-level issues or transient errors within the operation.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 11:21:31.315[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.rca_agent[0m:[36mrun[0m:[36m13[0m - [1mResult: {
+    "root_cause_entities": ["inventory"],
+    "root_cause_types": ["httpError5xx"]
+}[0m
+[32m2026-06-13 11:21:31.323[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m200[0m - [1mTrajectory has been saved to test/monitor/rca100/agent-batch1-gpt-4o/2026-06-13_08-43-09/trajectory/2026-06-13_08-43-09_#23-2.ipynb[0m
+[32m2026-06-13 11:21:31.325[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m204[0m - [1mPrompt has been saved to test/monitor/rca100/agent-batch1-gpt-4o/2026-06-13_08-43-09/prompt/2026-06-13_08-43-09_#23-2.json[0m
+[32m2026-06-13 11:21:31.329[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m231[0m - [1mPrediction: {
+    "root_cause_entities": ["inventory"],
+    "root_cause_types": ["httpError5xx"]
+}[0m
+[32m2026-06-13 11:21:31.330[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m232[0m - [1mGround Truth: {"root_cause_entities": ["inventory"], "root_cause_types": ["memoryPressure"]}[0m
+[32m2026-06-13 11:21:31.331[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m233[0m - [1mPassed: ["entities: {'inventory'}"][0m
+[32m2026-06-13 11:21:31.331[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m234[0m - [1mFailed: ["types: expected {'memoryPressure'}, got {'httpError5xx'}"][0m
+[32m2026-06-13 11:21:31.332[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m235[0m - [1mScore: 0.5[0m

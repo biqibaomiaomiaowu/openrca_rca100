@@ -1,0 +1,200 @@
+[32m2026-06-13 09:43:36.232[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.rca_agent[0m:[36mrun[0m:[36m11[0m - [1mObjective: [Task directory: rca100/cases/t043]
+<code vibeops_object type="alert_event">inventory接口流量下跌告警<alert_event event_id="c1848ad90770a6cd41ff289cecea4e64" trans_id="5og41qkdmp3u91ftoh3al0d1e0" rule_id="b7853e06-54b7-4409-9eea-9bb82fbfb252" rule_name="inventory接口流量下跌告警" entity_id="162799adab6799326676266a2c96cf3e" entity_name="inventory::/api/v1/inventory/{productId}" entity_type="apm.operation" entity_domain="apm" alert_time="2026-04-23T12:23:54+08:00" /></code> 帮我分析下根因。[0m
+[32m2026-06-13 09:43:39.666[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[1]
+Analysis: None
+Instruction: Start by loading the `task.json` file from the directory `rca100/cases/t043` to understand the alert context, including the alert time window, entity details, and prompt text.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:43:44.726[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[1]
+### Observation:
+The alert is titled "inventory接口流量下跌告警" (Inventory API Traffic Drop Alert). It was triggered for the entity `inventory::/api/v1/inventory/{productId}` of type `apm.operation` in the `apm` domain. The alert time window is from `2026-04-23 12:22:19` to `2026-04-23 12:32:19` (UTC+8). The user is requesting an analysis of the root cause for this issue.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+{'task_id': 't043', 'task_version': '1.0', 'alert_event_id': '5og41qkdmp3u91ftoh3al0d1e0', 'alert_title': 'inventory接口流量下跌告警', 'alert_trigger_time': '', 'alert_window': {'start': '2026-04-23T04:22:19.310326+00:00', 'end': '2026-04-23T04:32:19.310326+00:00'}, 'alert_entity': {'entity_id': None, 'entity_name': 'inventory::/api/v1/inventory/{productId}', 'entity_type': None, 'entity_domain': None}, 'prompt_text': '<code vibeops_object type="alert_event">inventory接口流量下跌告警<alert_event event_id="c1848ad90770a6cd41ff289cecea4e64" trans_id="5og41qkdmp3u91ftoh3al0d1e0" rule_id="b7853e06-54b7-4409-9eea-9bb82fbfb252" rule_name="inventory接口流量下跌告警" entity_id="162799adab6799326676266a2c96cf3e" entity_name="inventory::/api/v1/inventory/{productId}" entity_type="apm.operation" entity_domain="apm" alert_time="2026-04-23T12:23:54+08:00" /></code> 帮我分析下根因。', 'workspace': 'rca-benchmark', 'region_id': 'cn-hongkong', 'available_modalities': ['metrics', 'logs', 'traces', 'events', 'alerts', 'topology'], 'scoring_note': 'Output contract (prediction_schema.json) and fault taxonomy (taxonomy.json) will be published in a follow-up release.'}
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:43:49.179[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[2]
+Analysis: The alert indicates a traffic drop for the operation `inventory::/api/v1/inventory/{productId}` in the `inventory` service. The alert time window is from `2026-04-23 12:22:19` to `2026-04-23 12:32:19` (UTC+8). The next step is to preprocess the metrics data to identify anomalies in traffic-related KPIs for the `inventory` service and other potential root cause components.
+Instruction: Load the `metrics.parquet` file from the directory `rca100/cases/t043` and list all available KPIs. This will help identify traffic-related KPIs for further analysis.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:43:54.506[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[2]
+### Observation:
+The available KPIs in the metrics data include traffic-related metrics such as `request_count`, `error_count`, `error_rate`, `latency`, and `slow`. These KPIs are relevant for analyzing traffic-related issues like the reported drop in traffic for the `inventory` API.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+['node_ready_status' 'node_not_ready_status' 'node_memory_usage_rate'
+ 'node_disk_usage_rate' 'node_pod_running_count' 'node_cpu_usage_rate'
+ 'deployment_available_replicas' 'deployment_desired_replicas'
+ 'deployment_ready_replicas' 'deployment_availability_rate'
+ 'deployment_memory_usage_total' 'deployment_cpu_usage_total'
+ 'deployment_cpu_usage_vs_requests' 'deployment_cpu_usage_vs_limits'
+ 'cluster_node_count' 'cluster_failed_node_count' 'cluster_number_of_pod'
+ 'apiserver_non_2xx_read_request_qps' 'cluster_number_of_not_ready_pods'
+ 'apiserver_non_2xx_write_request_qps' 'apiserver_concurrent_connections'
+ 'apiserver_requests_per_second' 'namespace_number_of_not_ready_pods'
+ 'namespace_number_of_pods' 'request_count' 'slow_count' 'error_count'
+ 'avg_request_latency_seconds' 'arms_jvm_gc_total'
+ 'arms_jvm_gc_seconds_total' 'arms_jvm_gc_delta'
+ 'arms_jvm_gc_seconds_delta' 'arms_jvm_mem_used_bytes'
+ 'arms_jvm_mem_init_bytes' 'arms_jvm_mem_committed_bytes'
+ 'arms_jvm_mem_max_bytes' 'arms_jvm_threads_count'
+ 'arms_thread_pool_active_thread_count'
+ 'arms_thread_pool_current_thread_count'
+ 'arms_thread_pool_max_thread_count' 'arms_thread_pool_max_pool_size'
+ 'arms_thread_pool_core_pool_size' 'arms_thread_pool_scheduled_task_count'
+ 'arms_thread_pool_completed_task_count'
+ 'arms_thread_pool_rejected_task_count' 'arms_thread_pool_queue_size'
+ 'arms_grouped_thread_count' 'arms_grouped_thread_cpu_time'
+ 'arms_grouped_thread_runnable_count' 'arms_grouped_thread_waiting_count'
+ 'arms_grouped_thread_timed_waiting_count' 'cpu' 'latency' 'mem'
+ 'workload' 'error' 'slow' 'error_rate']
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:43:59.442[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[3]
+Analysis: The available KPIs include relevant traffic-related metrics such as `request_count`, `error_count`, `error_rate`, `latency`, and `slow`. These metrics are critical for identifying anomalies related to the reported traffic drop for the `inventory` API. The next step is to preprocess the metrics data by aggregating these KPIs for all potential root cause components, calculate global thresholds (e.g., P95), and filter the data within the alert time window for further analysis.
+Instruction: Aggregate the metrics data for the KPIs `request_count`, `error_count`, `error_rate`, `latency`, and `slow` for all components in the `apm.operation` entity set. Calculate the global P95 threshold for each KPI across all components. Then, filter the data to include only the time window from `2026-04-23 12:22:19` to `2026-04-23 12:32:19` (UTC+8).
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:44:07.600[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[3]
+### Observation:
+The global P95 thresholds for the KPIs are as follows: `error_count` is 1087.65, `error_rate` is 1.00, and `request_count` is 35194.20. However, no data points for the KPIs `request_count`, `error_count`, `error_rate`, `latency`, or `slow` were found within the specified alert time window (`2026-04-23 12:22:19` to `2026-04-23 12:32:19` UTC+8).
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+(metric
+error_count       1087.65
+error_rate           1.00
+request_count    35194.20
+Name: value, dtype: float64, Empty DataFrame
+Columns: [time, domain, entity_set, entity_id, entity_name, metric, value, metric_set_id, service]
+Index: [])
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:44:12.847[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[4]
+Analysis: The global P95 thresholds for the KPIs `error_count`, `error_rate`, and `request_count` were calculated, but no data points for these KPIs were found within the specified alert time window. This suggests that either the metrics data for the `inventory` API is missing during this period or the issue may not be directly observable in these KPIs. To proceed, we need to analyze distributed traces to identify any anomalies or errors in the call chain involving the `inventory` API during the alert time window.
+Instruction: Load the `traces.parquet` file from the directory `rca100/cases/t043` and filter the traces to include only those within the time window `2026-04-23 12:22:19` to `2026-04-23 12:32:19` (UTC+8). Focus on traces related to the `inventory` service or its operations.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:44:25.608[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[4]
+### Observation:
+No traces related to the `inventory` service or its operations were found within the specified alert time window (`2026-04-23 12:22:19` to `2026-04-23 12:32:19` UTC+8).
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+Empty DataFrame
+Columns: [traceId, spanId, parentSpanId, kind, spanName, startTime, endTime, duration, serviceName, pid, ip, hostname, statusCode, statusMessage, traceState, resources, attributes, __topic__, __tag__:__pack_id__, events, links]
+Index: []
+
+[0 rows x 21 columns]
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:44:28.580[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[5]
+Analysis: No traces related to the `inventory` service or its operations were found within the specified alert time window. This could indicate that the service was not processing requests during this period, which aligns with the reported traffic drop. Since metrics and traces have not provided sufficient information, the next step is to analyze logs for the `inventory` service to identify any errors or anomalies that could explain the traffic drop.
+Instruction: Load the `logs.parquet` file from the directory `rca100/cases/t043` and filter the logs to include only those related to the `inventory` service within the time window `2026-04-23 12:22:19` to `2026-04-23 12:32:19` (UTC+8). Look for any error messages or anomalies in the log content.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:44:36.067[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[5]
+### Observation:
+No error messages or anomalies were found in the logs related to the `inventory` service within the specified alert time window (`2026-04-23 12:22:19` to `2026-04-23 12:32:19` UTC+8).
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+Empty DataFrame
+Columns: [content, _time_, _source_, _container_ip_, _image_name_, _container_name_, _pod_name_, _namespace_, _pod_uid_, __topic__, __tag__:__pack_id__, __tag__:__hostname__, __tag__:_node_name_, __tag__:_node_ip_, __tag__:_cluster_id_]
+Index: []
+
+[0 rows x 15 columns]
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:44:39.766[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[6]
+Analysis: No anomalies or errors were found in the logs related to the `inventory` service within the specified alert time window. Metrics, traces, and logs have not provided sufficient evidence to identify the root cause. The absence of data in metrics and traces suggests that the `inventory` service might not have been operational during the alert time window. To confirm this, we should analyze Kubernetes events to check for any pod-level or node-level issues affecting the `inventory` service during the alert time window.
+Instruction: Load the `events.parquet` file from the directory `rca100/cases/t043` and filter the events to include only those related to the `inventory` service or its pods within the time window `2026-04-23 12:22:19` to `2026-04-23 12:32:19` (UTC+8). Look for any events indicating pod crashes, restarts, or scheduling issues.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:44:46.534[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[6]
+### Observation:
+No events indicating pod crashes, restarts, or scheduling issues were found for the `inventory` service or its pods within the specified alert time window (`2026-04-23 12:22:19` to `2026-04-23 12:32:19` UTC+8).
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+Empty DataFrame
+Columns: [eventId, hostname, level, pod_id, pod_name, clusterId, clusterName, __topic__]
+Index: []
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:44:50.346[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[7]
+Analysis: No events, metrics, traces, or logs related to the `inventory` service were found within the specified alert time window. This strongly suggests that the `inventory` service was not operational during this period, leading to the reported traffic drop. The absence of data across all modalities indicates a potential issue at the infrastructure level, such as a node failure or network isolation. To confirm this, the next step is to analyze the topology data to identify the nodes hosting the `inventory` service and check for any issues with those nodes.
+Instruction: Load the `topology.json` file from the directory `rca100/cases/t043` and identify the nodes hosting the `inventory` service. Check for any relations or dependencies that might indicate infrastructure-level issues affecting the service.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:44:58.896[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[7]
+### Observation:
+No specific nodes were identified as hosting the `inventory` service, as there were no `k8s.node` to `apm.service` relations for this service. However, the `inventory` service has dependencies on several operations, instances, and external components, including an external database and an HTTP client. Additionally, the `inventory` service is hosted by a Kubernetes deployment, which contains multiple pods. These relations do not indicate any direct infrastructure-level issues affecting the service.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+(Empty DataFrame
+Columns: [src, src_type, dst, dst_type, relation, first_observed, last_observed]
+Index: [],                                   src        src_type                               dst                  dst_type  relation  first_observed  last_observed
+6    ed13cb14265f98d9eb3b89b664760adb     apm.service  0730d69c0818717e0d0e987385f3a3ab             apm.operation  contains               0     1776839353
+11   ed13cb14265f98d9eb3b89b664760adb     apm.service  c01a1596a0d45bb7a531f16689910a43             apm.operation  contains               0     1776839353
+18   ed13cb14265f98d9eb3b89b664760adb     apm.service  07701fda8251906f1bd87b14d34fc002              apm.instance  contains               0     1776833593
+32   469f8e313055adba13ca3f4e76c65505     apm.service  474c2072f1451452bbb1abf29cc68b10  apm.external.http_client     calls               0     1776839353
+40   ed13cb14265f98d9eb3b89b664760adb     apm.service  3b0aaa9cc6d1f48a6fce24d7b439f478             apm.operation  contains               0     1776839353
+69   ed13cb14265f98d9eb3b89b664760adb     apm.service  162799adab6799326676266a2c96cf3e             apm.operation  contains               0     1776839353
+79   ed13cb14265f98d9eb3b89b664760adb     apm.service  d7a7899b0bef364781b3e4cf9cc9b707     apm.external.database     calls               0     1776839353
+90   469f8e313055adba13ca3f4e76c65505     apm.service  ed13cb14265f98d9eb3b89b664760adb               apm.service     calls               0     1776839353
+132  0375934342a7f2b01ee80cbbbf203c44   k8s.namespace  af2679d141fc313291e276608cddbc39               k8s.service  contains      1773319908     1776839085
+202  ed13cb14265f98d9eb3b89b664760adb     apm.service  7fb113e159d1fa7ccdfc641acf1870ad              apm.instance  contains               0     1776839353
+213  0375934342a7f2b01ee80cbbbf203c44   k8s.namespace  2fde24d43885d817c267035634f38957            k8s.deployment  contains               0              0
+230  2fde24d43885d817c267035634f38957  k8s.deployment  848713c066175e461f8a7088f54b37c9                   k8s.pod  contains               0              0
+257  2fde24d43885d817c267035634f38957  k8s.deployment  41cb3d5f4ab5cd618e5f099fa7230baa                   k8s.pod  contains               0              0
+268  2fde24d43885d817c267035634f38957  k8s.deployment  521f5afe1109ac0939224a5e6e6acfd4                   k8s.pod  contains               0              0
+279  2fde24d43885d817c267035634f38957  k8s.deployment  ed13cb14265f98d9eb3b89b664760adb               apm.service     hosts               0              0
+293  848713c066175e461f8a7088f54b37c9         k8s.pod  07701fda8251906f1bd87b14d34fc002              apm.instance     hosts               0              0
+311  41cb3d5f4ab5cd618e5f099fa7230baa         k8s.pod  07701fda8251906f1bd87b14d34fc002              apm.instance     hosts               0              0
+321  521f5afe1109ac0939224a5e6e6acfd4         k8s.pod  07701fda8251906f1bd87b14d34fc002              apm.instance     hosts               0              0
+326  ed13cb14265f98d9eb3b89b664760adb     apm.service  c6cbf1b49bcdb7d33859d04c79b97bf8              apm.instance  contains               0              0
+341  0375934342a7f2b01ee80cbbbf203c44   k8s.namespace  65a4dae96df35d2707a5a520b77a022b                   k8s.pod  contains               0              0
+342  0375934342a7f2b01ee80cbbbf203c44   k8s.namespace  7b76f230b3044421b2ccfafab2b7bc2f                   k8s.pod  contains               0              0
+344  0375934342a7f2b01ee80cbbbf203c44   k8s.namespace  f75984a390c16f76f362c49554a98df5                   k8s.pod  contains               0              0)
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:45:05.321[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[8]
+Analysis: The topology data indicates that the `inventory` service is hosted by a Kubernetes deployment with multiple pods, but no specific nodes were identified as hosting the service. Additionally, the service has dependencies on external components such as a database and an HTTP client. No direct infrastructure-level issues were identified from the topology data. Given the absence of metrics, traces, logs, and events during the alert time window, it is likely that the `inventory` service was not operational during this period. This could be due to a deployment-level issue, such as a misconfiguration or scaling problem. The next step is to analyze deployment-level metrics to check for anomalies in replica counts or resource usage.
+Instruction: Load the `metrics.parquet` file again and filter for deployment-level metrics (`entity_set == 'k8s.deployment'`) related to the `inventory` service. Focus on KPIs such as `deployment_desired_replicas`, `deployment_ready_replicas`, and `deployment_availability_rate` within the time window `2026-04-23 12:22:19` to `2026-04-23 12:32:19` (UTC+8).
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:45:18.499[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[8]
+### Observation:
+No deployment-level metrics (`deployment_desired_replicas`, `deployment_ready_replicas`, or `deployment_availability_rate`) related to the `inventory` service were found within the specified alert time window (`2026-04-23 12:22:19` to `2026-04-23 12:32:19` UTC+8).
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+Empty DataFrame
+Columns: [time, domain, entity_set, entity_id, entity_name, metric, value, metric_set_id, service]
+Index: []
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:45:23.389[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[9]
+Analysis: No deployment-level metrics related to the `inventory` service were found within the specified alert time window. This further supports the hypothesis that the service was not operational during this period. The absence of metrics, traces, logs, and events suggests a potential misconfiguration or scaling issue at the deployment level. Since no direct evidence of faults has been identified, the root cause might involve external dependencies or infrastructure-level issues that were not captured in the telemetry data.
+Instruction: Based on the analysis, the root cause of the traffic drop for the `inventory` API appears to be that the service was not operational during the alert time window. This could be due to a deployment-level misconfiguration or scaling issue, as no metrics, traces, logs, or events were recorded for the service during this period. Further investigation into the deployment configuration and external dependencies is recommended to confirm the exact cause.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:45:29.608[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.rca_agent[0m:[36mrun[0m:[36m13[0m - [1mResult: {
+    "root_cause_entities": ["inventory"],
+    "root_cause_types": ["replicaScaleDown"]
+}[0m
+[32m2026-06-13 09:45:29.614[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m200[0m - [1mTrajectory has been saved to test/monitor/rca100/agent-batch2-gpt-4o/2026-06-13_08-43-09/trajectory/2026-06-13_08-43-09_#42-1.ipynb[0m
+[32m2026-06-13 09:45:29.615[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m204[0m - [1mPrompt has been saved to test/monitor/rca100/agent-batch2-gpt-4o/2026-06-13_08-43-09/prompt/2026-06-13_08-43-09_#42-1.json[0m
+[32m2026-06-13 09:45:29.618[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m231[0m - [1mPrediction: {
+    "root_cause_entities": ["inventory"],
+    "root_cause_types": ["replicaScaleDown"]
+}[0m
+[32m2026-06-13 09:45:29.618[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m232[0m - [1mGround Truth: {"root_cause_entities": ["cart"], "root_cause_types": ["httpError5xx"]}[0m
+[32m2026-06-13 09:45:29.618[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m233[0m - [1mPassed: [][0m
+[32m2026-06-13 09:45:29.619[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m234[0m - [1mFailed: ["entities: expected {'cart'}, got {'inventory'}", "types: expected {'httpError5xx'}, got {'replicaScaleDown'}"][0m
+[32m2026-06-13 09:45:29.619[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m235[0m - [1mScore: 0.0[0m

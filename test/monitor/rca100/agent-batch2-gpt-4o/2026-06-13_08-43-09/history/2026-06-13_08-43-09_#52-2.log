@@ -1,0 +1,198 @@
+[32m2026-06-13 10:40:47.954[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.rca_agent[0m:[36mrun[0m:[36m11[0m - [1mObjective: [Task directory: rca100/cases/t053]
+<code vibeops_object type="alert_event">inventory接口响应超时告警<alert_event event_id="610eeaca3696998d292b794050bfdfed" trans_id="4931qeaftd5f57d25em6lvuqu3" rule_id="5fbe3e3d-7c22-428e-9436-75b68cf17afc" rule_name="inventory接口响应超时告警" /></code> 帮我分析下根因。[0m
+[32m2026-06-13 10:40:52.254[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[1]
+Analysis: None
+Instruction: Start by loading the `task.json` file from the directory `rca100/cases/t053` to understand the alert context, including the alert title, time window, and the entity that triggered the alert.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:40:59.477[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[1]
+### Observation:
+The alert is titled "inventory接口响应超时告警" (inventory interface response timeout alert). It occurred between 16:01:41 and 16:06:48 on April 3, 2026 (UTC+8). The alert was triggered by the APM operation `inventory::/api/v1/inventory/batch-reconciliation`.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+('inventory接口响应超时告警', datetime.datetime(2026, 4, 3, 16, 1, 41, 792896, tzinfo=<DstTzInfo 'Asia/Shanghai' CST+8:00:00 STD>), datetime.datetime(2026, 4, 3, 16, 6, 48, tzinfo=<DstTzInfo 'Asia/Shanghai' CST+8:00:00 STD>), {'entity_id': '2d5ef468202802748423656575955265', 'entity_name': 'inventory::/api/v1/inventory/batch-reconciliation', 'entity_type': 'apm.operation', 'entity_domain': 'apm'})
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:41:07.698[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[2]
+Analysis: The alert indicates a response timeout issue with the APM operation `inventory::/api/v1/inventory/batch-reconciliation` during the specified time window (16:01:41 to 16:06:48 on April 3, 2026, UTC+8). The next step is to preprocess the metrics data to identify potential anomalies in the KPIs of the inventory service and other possible root cause components.
+Instruction: Load the `metrics.parquet` file from the directory `rca100/cases/t053` and list all unique KPIs (`metric` column) and their associated `entity_set` values. This will help identify the available metrics for analysis.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:41:14.513[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[2]
+### Observation:
+The `metrics.parquet` file contains 63 unique KPIs across various `entity_set` values. Examples include `node_ready_status` and `node_memory_usage_rate` under `k8s.node`, as well as `error_rate` under both `apm.operation` and `apm.instance`. For a complete list of KPIs, you can request to display more rows of the data.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+metric          entity_set
+0           node_ready_status            k8s.node
+540     node_not_ready_status            k8s.node
+4050   node_memory_usage_rate            k8s.node
+5940   node_pod_running_count            k8s.node
+7695     node_disk_usage_rate            k8s.node
+...                       ...                 ...
+75425                workload  apm.service.legacy
+75431                   error  apm.service.legacy
+75434                    slow  apm.service.legacy
+85412              error_rate       apm.operation
+85581              error_rate        apm.instance
+
+[63 rows x 2 columns]
+
+**Note**: The printed pandas DataFrame is truncated due to its size. Only **10 rows** are displayed, which may introduce observation bias due to the incomplete table. If you want to comprehensively understand the details without bias, please ask Executor using `df.head(X)` to display more rows.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:41:19.810[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[3]
+Analysis: The metrics file contains 63 unique KPIs across various entity sets, including `apm.operation`, `apm.instance`, and `k8s.node`. The alert is related to the `inventory` operation, so we need to focus on KPIs relevant to the `inventory` service and other possible root cause components. To proceed, we need to aggregate each KPI for each component and calculate global thresholds (e.g., P95) for anomaly detection.
+Instruction: Filter the `metrics.parquet` data to include only rows where `entity_name` contains 'inventory' or matches other possible root cause components (e.g., frontend, checkout, payment, etc.). Then, aggregate each KPI for each component and calculate the global P95 threshold for each 'component-KPI' time series.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:41:26.846[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[3]
+### Observation:
+The filtered metrics data includes KPIs for relevant components such as `inventory`, `frontend`, `checkout`, and others. For each component-KPI combination, the global P95 threshold has been calculated. For example, the `accounting` component has a P95 threshold of 0.0508 seconds for `avg_request_latency_seconds` and 4,771 requests for `request_count`. The full table contains 216 rows, and you can request to display more rows for a comprehensive view.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+component                       metric  p95_threshold
+0    accounting  avg_request_latency_seconds   5.077629e-02
+1    accounting                          cpu   6.894275e-03
+2    accounting                      latency   4.947270e-02
+3    accounting                          mem   1.051143e+08
+4    accounting                request_count   4.771100e+03
+..          ...                          ...            ...
+211    shipping                          cpu   1.200511e-02
+212    shipping                      latency   1.283294e-03
+213    shipping                          mem   3.194334e+06
+214    shipping                request_count   9.767400e+03
+215    shipping                     workload   1.048500e+04
+
+[216 rows x 3 columns]
+
+**Note**: The printed pandas DataFrame is truncated due to its size. Only **10 rows** are displayed, which may introduce observation bias due to the incomplete table. If you want to comprehensively understand the details without bias, please ask Executor using `df.head(X)` to display more rows.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:41:30.530[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[4]
+Analysis: The global P95 thresholds for each component-KPI combination have been calculated. This allows us to identify anomalies by comparing the metrics data within the alert time window (16:01:41 to 16:06:48, UTC+8) against these thresholds. The next step is to filter the metrics data to include only the time window of the alert and check for anomalies in the KPIs of the `inventory` service and other possible root cause components.
+Instruction: Filter the metrics data to include only rows within the alert time window (16:01:41 to 16:06:48, UTC+8). Then, compare the values of each component-KPI combination against their respective global P95 thresholds to identify anomalies.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:41:40.464[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[4]
+### Observation:
+Within the alert time window (16:01:41 to 16:06:48, UTC+8), 128 anomalies were identified where the values of specific component-KPI combinations exceeded their respective global P95 thresholds. Examples include the `frontend-proxy::ingress` operation with a value of 59,617 exceeding its P95 threshold of 59,005, and the `frontend::POST` operation with a value of 59,581 exceeding its P95 threshold of 55,486.7. The anomalies span multiple components, including `frontend`, `frontend-proxy`, and `inventory`. For a complete view, you can request to display more rows of the data.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+time domain     entity_set                         entity_id                      entity_name  ...         value                            metric_set_id service                        component p95_threshold
+11    1775203601000000    apm  apm.operation  d1c2b3981457bf9b5c5beefbbf246ebc          frontend-proxy::ingress  ...  59617.000000  apm@metric_set@apm.metric.apm.operation    None                   frontend-proxy  59005.000000
+29    1775203601000000    apm  apm.operation  c6388887e91aa969bdf210fe96a48098                   frontend::POST  ...  59581.000000  apm@metric_set@apm.metric.apm.operation    None                         frontend  55486.700000
+54    1775203541000000    apm  apm.operation  d1c2b3981457bf9b5c5beefbbf246ebc          frontend-proxy::ingress  ...   2233.000000  apm@metric_set@apm.metric.apm.operation    None                   frontend-proxy   2221.400000
+83    1775203541000000    apm  apm.operation  c6388887e91aa969bdf210fe96a48098                   frontend::POST  ...   2266.000000  apm@metric_set@apm.metric.apm.operation    None                         frontend   1483.600000
+145   1775203601000000    apm  apm.operation  d1c2b3981457bf9b5c5beefbbf246ebc          frontend-proxy::ingress  ...  61964.000000  apm@metric_set@apm.metric.apm.operation    None                   frontend-proxy  58044.900000
+...                ...    ...            ...                               ...                              ...  ...           ...                                      ...     ...                              ...           ...
+2399  1775203601000000    apm   apm.instance  d1f1b0349fadcfdc23ca3918ac448623  frontend-proxy-67d64dc4f8-xz2fd  ...      0.959904   apm@metric_set@apm.metric.apm.instance    None  frontend-proxy-67d64dc4f8-xz2fd      0.946232
+2411  1775203601000000    apm   apm.instance  fa548039d9a7b76db9ec70507e734faf  frontend-proxy-67d64dc4f8-8c99b  ...      0.971930   apm@metric_set@apm.metric.apm.instance    None  frontend-proxy-67d64dc4f8-8c99b      0.956966
+2417  1775203601000000    apm   apm.instance  009ec66a350bc3e5210aea3dc6e6bdfd        frontend-6df7d557f5-sgfcb  ...      0.964745   apm@metric_set@apm.metric.apm.instance    None        frontend-6df7d557f5-sgfcb      0.950812
+2419  1775203511000000    apm   apm.instance  7fb113e159d1fa7ccdfc641acf1870ad       inventory-794d9f8f85-hhjtj  ...      0.012000   apm@metric_set@apm.metric.apm.instance    None       inventory-794d9f8f85-hhjtj      0.011512
+2425  1775203601000000    apm   apm.instance  beecfe3febef4ed2425bac5626962ed9        frontend-6df7d557f5-nz7g4  ...      0.962583   apm@metric_set@apm.metric.apm.instance    None        frontend-6df7d557f5-nz7g4      0.944012
+
+[128 rows x 11 columns]
+
+**Note**: The printed pandas DataFrame is truncated due to its size. Only **10 rows** are displayed, which may introduce observation bias due to the incomplete table. If you want to comprehensively understand the details without bias, please ask Executor using `df.head(X)` to display more rows.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:41:44.014[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[5]
+Analysis: 128 anomalies were identified across multiple components, including `frontend`, `frontend-proxy`, and `inventory`. These anomalies indicate potential faults, but further analysis is required to determine the root cause. Since multiple components are involved, trace analysis is necessary to identify the most downstream faulty service in the call chain.
+Instruction: Load the `traces.parquet` file from the directory `rca100/cases/t053` and filter the data to include only traces within the alert time window (16:01:41 to 16:06:48, UTC+8). Then, identify traces involving the `inventory` service and other faulty components to determine the most downstream faulty service in the call chain.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:41:56.935[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[5]
+### Observation:
+The filtered trace data within the alert time window includes 29,714 traces involving the `inventory` service and other faulty components like `frontend` and `frontend-proxy`. These traces reveal the sequence of calls, such as ingress, router egress, and specific API routes like `/api/v1/inventory/batch-reconciliation`. To determine the most downstream faulty service in the call chain, further analysis of the trace hierarchy and parent-child relationships is required. For a detailed view, you can request to display more rows of the data.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+traceId            spanId      parentSpanId kind                                           spanName  ...  __topic__      __tag__:__pack_id__ events links         ip
+400347  d459e664e6b4af1c0870f345edefecf4  c1b628526503e8a4                      2                                            ingress  ...             6B168B6371B6AC7E-381CEB   None  None       None
+400346  d459e664e6b4af1c0870f345edefecf4  80e00f9434ad570b  c1b628526503e8a4    3                             router frontend egress  ...             6B168B6371B6AC7E-381CEB   None  None       None
+400537  d459e664e6b4af1c0870f345edefecf4  93d7928f54346dad  80e00f9434ad570b    2                                                GET  ...             3AAB798034CD4509-37F9AA   None  None       None
+400520  d459e664e6b4af1c0870f345edefecf4  5b88df84b7b1f5e5  8717595e1ee7fa85    3     grpc.oteldemo.ProductCatalogService/GetProduct  ...             3AAB798034CD4509-37F9AA   None  None       None
+400528  d459e664e6b4af1c0870f345edefecf4  f32e0669db527cf8  93d7928f54346dad    2                      GET /api/products/{productId}  ...             3AAB798034CD4509-37F9AA   None  None       None
+...                                  ...               ...               ...  ...                                                ...  ...        ...                      ...    ...   ...        ...
+460001  cd04d56d7eaee6c17d749ed6658f8cf3  e7f1e15618e10088  6e76695156df2f7e    3                                         dns.lookup  ...             F5B9811ED13C5090-38557E   None  None       None
+460006  cd04d56d7eaee6c17d749ed6658f8cf3  6e76695156df2f7e  41129a1487edc7a9    1  executing api route (pages) /api/batch-reconci...  ...             7D229463BE07C1C3-38A49E   None  None       None
+460005  cd04d56d7eaee6c17d749ed6658f8cf3  595586c3641bacd7  6e76695156df2f7e    3                                               POST  ...             7D229463BE07C1C3-38A49E   None  None       None
+460000  cd04d56d7eaee6c17d749ed6658f8cf3  f7abf595bb224451  6e76695156df2f7e    1                                        tcp.connect  ...             F5B9811ED13C5090-38557E   None  None       None
+460008  cd04d56d7eaee6c17d749ed6658f8cf3  3916322fef48e6bf  595586c3641bacd7    2             /api/v1/inventory/batch-reconciliation  ...             3970FC721B8AA55E-382DF5   None  None  10.0.2.36
+
+[29714 rows x 21 columns]
+
+**Note**: The printed pandas DataFrame is truncated due to its size. Only **10 rows** are displayed, which may introduce observation bias due to the incomplete table. If you want to comprehensively understand the details without bias, please ask Executor using `df.head(X)` to display more rows.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:42:04.307[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[6]
+Analysis: The trace data within the alert time window includes 29,714 traces involving the `inventory` service and other faulty components like `frontend` and `frontend-proxy`. These traces reveal the sequence of calls and parent-child relationships, which are essential for identifying the most downstream faulty service in the call chain. To proceed, we need to analyze the trace hierarchy to determine the last faulty service in the call chain.
+Instruction: Analyze the parent-child relationships in the filtered trace data to identify the most downstream faulty service in the call chain. Focus on traces involving the `inventory` service and other faulty components identified in the metrics analysis.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:42:17.806[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[6]
+### Observation:
+The analysis of parent-child relationships in the trace data identified 8,541 spans as the most downstream faulty services in the call chain. These spans include operations such as `SELECT inventory.inventory`, `HikariDataSource.getConnection`, and `/api/v1/inventory/batch-reconciliation`, primarily involving the `inventory` service. This indicates that the `inventory` service is the most downstream faulty service in the call chain during the alert time window. For a detailed view, you can request to display more rows of the data.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+traceId            spanId      parentSpanId kind                                spanName  ...  __topic__      __tag__:__pack_id__ events links           ip
+400182  8eba42c7996a5286267026d41a36f240  b1f5bad4d5f75b7d  23cb4762cdd30c37    3              SELECT inventory.inventory  ...             F0E2F9BF2D649D76-388C92   None  None  10.0.16.157
+400184  8eba42c7996a5286267026d41a36f240  ae81fb7082f6866f  23cb4762cdd30c37    1          HikariDataSource.getConnection  ...             F0E2F9BF2D649D76-388C92   None  None  10.0.16.157
+400200  8f91542c2c5df59ba65cd3c5160c6eed  44d0f30cefc1d48f  870f08ce95b88bfd    3              SELECT inventory.inventory  ...             89C0234368B18E62-38C45B   None  None    10.0.2.36
+400201  2eea3445af5e51af90ee2a34198344c3  6ce9a6c781e56903  68dadfbedcacd398    3              SELECT inventory.inventory  ...             89C0234368B18E62-38C45B   None  None    10.0.2.36
+400207  2eea3445af5e51af90ee2a34198344c3  141a53f10cc5ab9b  68dadfbedcacd398    1          HikariDataSource.getConnection  ...             89C0234368B18E62-38C45B   None  None    10.0.2.36
+...                                  ...               ...               ...  ...                                     ...  ...        ...                      ...    ...   ...          ...
+459998  acd1ba6afdb239440203ac5202e8fd47  8579deea556a370f  4bbe106900e8cedc    1                             tcp.connect  ...             383BF94C620EA31F-3846DE   None  None         None
+459999  2801904fa0aaf270cbefb1ddf4dc4220  3ddd42d1a36f2bf5  54a71e47755abc6d    1                             tcp.connect  ...             383BF94C620EA31F-3846DE   None  None         None
+460000  cd04d56d7eaee6c17d749ed6658f8cf3  f7abf595bb224451  6e76695156df2f7e    1                             tcp.connect  ...             F5B9811ED13C5090-38557E   None  None         None
+460001  cd04d56d7eaee6c17d749ed6658f8cf3  e7f1e15618e10088  6e76695156df2f7e    3                              dns.lookup  ...             F5B9811ED13C5090-38557E   None  None         None
+460008  cd04d56d7eaee6c17d749ed6658f8cf3  3916322fef48e6bf  595586c3641bacd7    2  /api/v1/inventory/batch-reconciliation  ...             3970FC721B8AA55E-382DF5   None  None    10.0.2.36
+
+[8541 rows x 21 columns]
+
+**Note**: The printed pandas DataFrame is truncated due to its size. Only **10 rows** are displayed, which may introduce observation bias due to the incomplete table. If you want to comprehensively understand the details without bias, please ask Executor using `df.head(X)` to display more rows.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:42:22.656[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[7]
+Analysis: The trace analysis identified 8,541 spans as the most downstream faulty services in the call chain, primarily involving the `inventory` service. This confirms that the `inventory` service is the most downstream faulty service during the alert time window. The next step is to analyze the logs to identify the specific root cause reason for the fault in the `inventory` service.
+Instruction: Load the `logs.parquet` file from the directory `rca100/cases/t053` and filter the logs to include only those related to the `inventory` service within the alert time window (16:01:41 to 16:06:48, UTC+8). Search for error messages or other relevant information to identify the root cause reason for the fault.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:42:31.705[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[7]
+### Observation:
+No error messages or relevant logs related to the `inventory` service were found within the alert time window (16:01:41 to 16:06:48, UTC+8). This suggests that the root cause reason for the fault may not be directly observable in the logs. Further investigation using other telemetry data, such as metrics or traces, may be required.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+Empty DataFrame
+Columns: [content, _time_, _source_, _image_name_, _container_name_, _pod_name_, _namespace_, _pod_uid_, _container_ip_, __topic__, __tag__:__pack_id__, __tag__:_node_ip_, __tag__:_cluster_id_, __tag__:__hostname__, __tag__:_node_name_]
+Index: []
+
+[0 rows x 15 columns]
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:42:35.693[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[8]
+Analysis: No error messages or relevant logs related to the `inventory` service were found within the alert time window. This suggests that the root cause reason for the fault may not be directly observable in the logs. However, the trace analysis has already identified the `inventory` service as the most downstream faulty service in the call chain. Since logs did not provide additional insights, the root cause reason may need to be inferred from metrics or traces.
+Instruction: The root cause of the issue is the `inventory` service, specifically the operation `/api/v1/inventory/batch-reconciliation`. The fault is likely due to resource contention or inefficiencies in database queries, as indicated by the spans such as `SELECT inventory.inventory` and `HikariDataSource.getConnection`. The root cause reason can be classified as `slowSQL` due to the observed database-related spans in the traces. Further optimization of database queries or connection pooling in the `inventory` service is recommended to resolve the issue.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 10:42:40.003[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.rca_agent[0m:[36mrun[0m:[36m13[0m - [1mResult: {
+    "root_cause_entities": ["inventory"],
+    "root_cause_types": ["slowSQL"]
+}[0m
+[32m2026-06-13 10:42:40.009[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m200[0m - [1mTrajectory has been saved to test/monitor/rca100/agent-batch2-gpt-4o/2026-06-13_08-43-09/trajectory/2026-06-13_08-43-09_#52-2.ipynb[0m
+[32m2026-06-13 10:42:40.010[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m204[0m - [1mPrompt has been saved to test/monitor/rca100/agent-batch2-gpt-4o/2026-06-13_08-43-09/prompt/2026-06-13_08-43-09_#52-2.json[0m
+[32m2026-06-13 10:42:40.013[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m231[0m - [1mPrediction: {
+    "root_cause_entities": ["inventory"],
+    "root_cause_types": ["slowSQL"]
+}[0m
+[32m2026-06-13 10:42:40.013[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m232[0m - [1mGround Truth: {"root_cause_entities": ["inventory"], "root_cause_types": ["cpuFullLoad"]}[0m
+[32m2026-06-13 10:42:40.014[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m233[0m - [1mPassed: ["entities: {'inventory'}"][0m
+[32m2026-06-13 10:42:40.014[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m234[0m - [1mFailed: ["types: expected {'cpuFullLoad'}, got {'slowSQL'}"][0m
+[32m2026-06-13 10:42:40.014[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m235[0m - [1mScore: 0.5[0m

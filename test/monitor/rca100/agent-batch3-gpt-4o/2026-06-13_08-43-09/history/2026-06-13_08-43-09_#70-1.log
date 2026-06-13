@@ -1,0 +1,182 @@
+[32m2026-06-13 08:59:18.492[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.rca_agent[0m:[36mrun[0m:[36m11[0m - [1mObjective: [Task directory: rca100/cases/t071]
+<code vibeops_object type="alert_event">frontend响应时间突增告警<alert_event event_id="b34903a5724c5db1542fd732023c5101" trans_id="ou4h9lieah4n1auvsn72kuv3g1" rule_id="bd9b5c12-f227-49d9-b3bd-9c6515ee906d" rule_name="frontend响应时间突增告警" /></code>
+
+帮我分析下根因。[0m
+[32m2026-06-13 08:59:22.901[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[1]
+Analysis: None
+Instruction: Start by loading the `task.json` file from the directory `rca100/cases/t071` to understand the alert context, including the alert title, time window, and the entity that triggered the alert.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 08:59:28.953[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[1]
+### Observation:
+The alert is titled "frontend响应时间突增告警" (frontend response time spike alert). It occurred for the entity `frontend::POST /api/cart`, which is an APM operation. The alert time window is from April 4, 2026, 23:29:47 to April 4, 2026, 23:35:10 (UTC+8). The user requests help to analyze the root cause of this issue.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+('', {'start': '2026-04-04T23:29:47.051744+08:00', 'end': '2026-04-04T23:35:10+08:00'}, {'entity_id': '9e69280c47b4c2f35576402946e3b714', 'entity_name': 'frontend::POST /api/cart', 'entity_type': 'apm.operation', 'entity_domain': 'apm'}, '<code vibeops_object type="alert_event">frontend响应时间突增告警<alert_event event_id="b34903a5724c5db1542fd732023c5101" trans_id="ou4h9lieah4n1auvsn72kuv3g1" rule_id="bd9b5c12-f227-49d9-b3bd-9c6515ee906d" rule_name="frontend响应时间突增告警" /></code>\n\n帮我分析下根因。')
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 08:59:34.314[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[2]
+Analysis: The alert indicates a response time spike for the APM operation `frontend::POST /api/cart` during the specified time window. The next step is to preprocess the metrics data to identify potential anomalies in the KPIs of the possible root cause components.
+Instruction: Load the `metrics.parquet` file from the directory `rca100/cases/t071` and list all available KPIs and their associated components. This will help identify which KPIs to analyze for anomalies.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 08:59:40.824[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[2]
+### Observation:
+The `metrics.parquet` file contains various KPIs across different components. These include node-level metrics (e.g., `node_ready_status`, `node_memory_usage_rate`), service-level metrics (e.g., `error_rate` for services like `frontend-proxy`, `cart`, and `inventory`), and other metrics related to Kubernetes nodes and APM instances. There are a total of 307 unique combinations of entity sets, entity names, and metrics available for analysis.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+entity_set                      entity_name                  metric
+0          k8s.node                                        node_ready_status
+2025       k8s.node                                    node_not_ready_status
+4050       k8s.node                                   node_memory_usage_rate
+5400       k8s.node                                     node_disk_usage_rate
+5535       k8s.node                                   node_pod_running_count
+...             ...                              ...                     ...
+86201  apm.instance  frontend-proxy-67d64dc4f8-xz2fd              error_rate
+86239  apm.instance            cart-67f957cc88-q9w2g              error_rate
+86277  apm.instance  frontend-proxy-67d64dc4f8-8c99b              error_rate
+86321  apm.instance        inventory-887d8db89-7v4s5              error_rate
+86323  apm.instance                        inventory              error_rate
+
+[307 rows x 3 columns]
+
+**Note**: The printed pandas DataFrame is truncated due to its size. Only **10 rows** are displayed, which may introduce observation bias due to the incomplete table. If you want to comprehensively understand the details without bias, please ask Executor using `df.head(X)` to display more rows.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 08:59:44.348[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[3]
+Analysis: The `metrics.parquet` file contains a variety of KPIs across different components, including node-level and service-level metrics. Since the alert is related to the APM operation `frontend::POST /api/cart`, we should focus on service-level metrics and other relevant metrics for the possible root cause components. The next step is to aggregate the metrics for each component and calculate global thresholds (e.g., P95) for each KPI to identify potential anomalies.
+Instruction: Aggregate the metrics for each component and calculate the global P95 threshold for each KPI in the `metrics.parquet` file. This will help identify potential anomalies in the KPIs of the possible root cause components.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 08:59:53.044[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[3]
+### Observation:
+The global P95 thresholds for each KPI across all components have been calculated. These thresholds represent the 95th percentile of metric values, helping to identify potential anomalies. For example, the `avg_request_latency_seconds` for the `accounting` service has a P95 threshold of 0.040943 seconds, while the `request_count` for the same service has a P95 threshold of 1787.6. Similarly, node-level metrics like `node_memory_usage_rate` have a P95 threshold of 91.45%. There are 307 unique KPI-component combinations analyzed.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+entity_set            entity_name                       metric  p95_threshold
+0    apm.instance             accounting  avg_request_latency_seconds       0.040943
+1    apm.instance             accounting                request_count    1787.600000
+2    apm.instance    ad-865bb86b84-6hp49  avg_request_latency_seconds       0.048108
+3    apm.instance    ad-865bb86b84-6hp49                request_count     522.300000
+4    apm.instance  cart-67f957cc88-njsn7  avg_request_latency_seconds       7.414946
+..            ...                    ...                          ...            ...
+302      k8s.node                                node_disk_usage_rate      34.662207
+303      k8s.node                              node_memory_usage_rate      91.454676
+304      k8s.node                               node_not_ready_status       0.000000
+305      k8s.node                              node_pod_running_count     773.000000
+306      k8s.node                                   node_ready_status       1.000000
+
+[307 rows x 4 columns]
+
+**Note**: The printed pandas DataFrame is truncated due to its size. Only **10 rows** are displayed, which may introduce observation bias due to the incomplete table. If you want to comprehensively understand the details without bias, please ask Executor using `df.head(X)` to display more rows.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 08:59:57.071[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[4]
+Analysis: The global P95 thresholds for each KPI across all components have been calculated. These thresholds will help identify anomalies in the metrics during the alert time window. The next step is to filter the metrics data to include only the time window of the alert (April 4, 2026, 23:29:47 to April 4, 2026, 23:35:10 UTC+8) and check for anomalies by comparing the metric values against the calculated P95 thresholds.
+Instruction: Filter the metrics data in `metrics.parquet` to include only the time window of the alert (April 4, 2026, 23:29:47 to April 4, 2026, 23:35:10 UTC+8). Then, identify anomalies by comparing the metric values against the global P95 thresholds for each KPI.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:00:05.599[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[4]
+### Observation:
+During the alert time window, 292 anomalies were identified where metric values exceeded their global P95 thresholds. Examples include high `node_memory_usage_rate` for Kubernetes nodes (e.g., exceeding the threshold of 91.45%) and elevated `error_rate` for APM instances such as `frontend-proxy` and `frontend`. These anomalies indicate potential issues with node memory usage and error rates in the frontend-related services.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+time domain    entity_set                         entity_id                      entity_name                  metric      value                                     metric_set_id service  p95_threshold
+450   1775316617000000    k8s      k8s.node                                                                     node_memory_usage_rate  91.594716  k8s@metric_set@k8s.metric.high_level_metric_node    None      91.454676
+451   1775316647000000    k8s      k8s.node                                                                     node_memory_usage_rate  91.608618  k8s@metric_set@k8s.metric.high_level_metric_node    None      91.454676
+452   1775316677000000    k8s      k8s.node                                                                     node_memory_usage_rate  91.617081  k8s@metric_set@k8s.metric.high_level_metric_node    None      91.454676
+453   1775316707000000    k8s      k8s.node                                                                     node_memory_usage_rate  91.583397  k8s@metric_set@k8s.metric.high_level_metric_node    None      91.454676
+454   1775316737000000    k8s      k8s.node                                                                     node_memory_usage_rate  91.630065  k8s@metric_set@k8s.metric.high_level_metric_node    None      91.454676
+...                ...    ...           ...                               ...                              ...                     ...        ...                                               ...     ...            ...
+6525  1775316827000000    apm  apm.instance  eab531e9b188fe065edbebdbf839c609  frontend-proxy-67d64dc4f8-4ptg6              error_rate   0.935700            apm@metric_set@apm.metric.apm.instance    None       0.930847
+6542  1775316857000000    apm  apm.instance  82ae8fb5979d5759841affc9d937a0d4        frontend-6df7d557f5-nbvwh              error_rate   0.927495            apm@metric_set@apm.metric.apm.instance    None       0.925033
+6546  1775316737000000    apm  apm.instance  d1f1b0349fadcfdc23ca3918ac448623  frontend-proxy-67d64dc4f8-xz2fd              error_rate   0.926398            apm@metric_set@apm.metric.apm.instance    None       0.918054
+6565  1775316827000000    apm  apm.instance  fa548039d9a7b76db9ec70507e734faf  frontend-proxy-67d64dc4f8-8c99b              error_rate   0.928279            apm@metric_set@apm.metric.apm.instance    None       0.927835
+6566  1775316857000000    apm  apm.instance  fa548039d9a7b76db9ec70507e734faf  frontend-proxy-67d64dc4f8-8c99b              error_rate   0.932285            apm@metric_set@apm.metric.apm.instance    None       0.927835
+
+[292 rows x 10 columns]
+
+**Note**: The printed pandas DataFrame is truncated due to its size. Only **10 rows** are displayed, which may introduce observation bias due to the incomplete table. If you want to comprehensively understand the details without bias, please ask Executor using `df.head(X)` to display more rows.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:00:10.933[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[5]
+Analysis: During the alert time window, 292 anomalies were identified where metric values exceeded their global P95 thresholds. These anomalies include high `node_memory_usage_rate` for Kubernetes nodes and elevated `error_rate` for APM instances such as `frontend-proxy` and `frontend`. This indicates potential issues with node memory usage and error rates in frontend-related services. To further localize the root cause, we need to analyze distributed traces to identify the most downstream faulty service in the call chain.
+Instruction: Load the `traces.parquet` file from the directory `rca100/cases/t071` and filter the traces within the alert time window (April 4, 2026, 23:29:47 to April 4, 2026, 23:35:10 UTC+8). Identify traces with elevated durations or error status codes to pinpoint the most downstream faulty service in the call chain.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:00:24.745[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[5]
+### Observation:
+Within the alert time window, 98,691 traces with elevated durations or error status codes were identified. These traces include operations such as `POST /api/cart`, `grpc.oteldemo.CartService/AddItem`, and `Currency/Convert`. Some traces also contain error-related attributes, such as exceptions in the `CartService` and `api/cart` operations. This indicates potential issues in the `cart` and `currency` services, which may be contributing to the observed anomalies. Further analysis is needed to confirm the most downstream faulty service in the call chain.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+traceId            spanId      parentSpanId kind                               spanName  ...  __topic__      __tag__:__pack_id__                                             events links    ip
+400025  20dfc8c1f2a9bab75f3b154dcf0c73de  ef698fc0856f3d7a  0a3d1f9735fd3b6a    2                       Currency/Convert  ...             14AE0E1682356D2A-3CF047  [{"attributes":{},"name":"Processing currency ...  None  None
+400026  e13d7c15ab431ab1cb9a9115e2490e0b  2d07c622b5db07ad  6441a19602c78be3    2                       Currency/Convert  ...             14AE0E1682356D2A-3CF047  [{"attributes":{},"name":"Processing currency ...  None  None
+400027  20dfc8c1f2a9bab75f3b154dcf0c73de  1e9da7aac14365f4  cabd01e4878be91f    2                       Currency/Convert  ...             14AE0E1682356D2A-3CF047  [{"attributes":{},"name":"Processing currency ...  None  None
+400028  e13d7c15ab431ab1cb9a9115e2490e0b  9e42b0535908f7f6  5eb48f28018c1b22    2                       Currency/Convert  ...             14AE0E1682356D2A-3CF047  [{"attributes":{},"name":"Processing currency ...  None  None
+400034  4d96272c4fb356c4ca1a71985f96f12d  0e1d06910938500d  cea701371bfa2343    2                       Currency/Convert  ...             14AE0E1682356D2A-3CF047  [{"attributes":{},"name":"Processing currency ...  None  None
+...                                  ...               ...               ...  ...                                    ...  ...        ...                      ...                                                ...   ...   ...
+600004  c30a28ffab0e11b1f22c627dd0cbcb97  aa26bc90b229fc62  a3b75c3907dc070d    1                           GetInventory  ...             22D2A3D145F2EFD3-3C86B6                                               None  None  None
+600005  c30a28ffab0e11b1f22c627dd0cbcb97  a3b75c3907dc070d  2d386e1424fc6e8f    2     POST /oteldemo.CartService/AddItem  ...             22D2A3D145F2EFD3-3C86B6  [{"attributes":{"exception.type":"System.Net.H...  None  None
+600006  c30a28ffab0e11b1f22c627dd0cbcb97  694410204e22dc2f  49d00d8d30a75ee3    1  executing api route (pages) /api/cart  ...             22D2A3D145F2EFD3-3C86B6  [{"attributes":{"exception.type":"13","excepti...  None  None
+600007  c30a28ffab0e11b1f22c627dd0cbcb97  49d00d8d30a75ee3  87f19b8a08a4fa34    2                         POST /api/cart  ...             22D2A3D145F2EFD3-3C86B6                                               None  None  None
+600008  c30a28ffab0e11b1f22c627dd0cbcb97  2d386e1424fc6e8f  694410204e22dc2f    3      grpc.oteldemo.CartService/AddItem  ...             22D2A3D145F2EFD3-3C86B6                                               None  None  None
+
+[98691 rows x 21 columns]
+
+**Note**: The printed pandas DataFrame is truncated due to its size. Only **10 rows** are displayed, which may introduce observation bias due to the incomplete table. If you want to comprehensively understand the details without bias, please ask Executor using `df.head(X)` to display more rows.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:00:29.048[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[6]
+Analysis: The trace analysis identified 98,691 traces with elevated durations or error status codes during the alert time window. These traces include operations such as `POST /api/cart`, `grpc.oteldemo.CartService/AddItem`, and `Currency/Convert`. Some traces also contain error-related attributes, such as exceptions in the `CartService` and `api/cart` operations. This suggests potential issues in the `cart` and `currency` services, which may be contributing to the anomalies. To confirm the root cause, we need to analyze logs for these services to identify specific error messages or patterns.
+Instruction: Load the `logs.parquet` file from the directory `rca100/cases/t071` and filter logs for the alert time window (April 4, 2026, 23:29:47 to April 4, 2026, 23:35:10 UTC+8). Focus on logs related to the `cart` and `currency` services, and search for error messages or patterns that could indicate the root cause.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:00:39.932[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m126[0m - [1m--------------------------------------------------------------------------------
+Step[6]
+### Observation:
+During the alert time window, 1,933 error logs were identified related to the `cart` and `currency` services. These logs include messages such as "调用库存服务失败" (failed to call inventory service) and `HttpRequestException` with `SocketException`, indicating connection failures and network-related issues. The errors primarily involve the `cart.services.InventoryServiceClient` and `cart.services.CartService`, suggesting that the `cart` service is experiencing issues when interacting with the inventory service. This points to potential network or service-level problems as the root cause.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+content                              _time_ _source_                             _pod_uid_ _container_ip_  ...     __tag__:__pack_id__   __tag__:__hostname__    __tag__:_node_name_ __tag__:_node_ip_               __tag__:_cluster_id_
+336884      fail: cart.services.InventoryServiceClient[0] 2026-04-04 23:34:46.094544200+08:00   stdout  6fb1c5cb-a02c-404c-b212-6535f52829d9     10.0.2.100  ...  1C08B0ABB1752FC7-DE4D1  cn-hongkong.10.0.2.59  cn-hongkong.10.0.2.59         10.0.2.59  cfbbc0eabc19d43c0a6fb6889b4451ad0
+336885        调用库存服务失败: OLJCESPC7Z, Error=Connection r... 2026-04-04 23:34:46.094552992+08:00   stdout  6fb1c5cb-a02c-404c-b212-6535f52829d9     10.0.2.100  ...  1C08B0ABB1752FC7-DE4D1  cn-hongkong.10.0.2.59  cn-hongkong.10.0.2.59         10.0.2.59  cfbbc0eabc19d43c0a6fb6889b4451ad0
+336886        System.Net.Http.HttpRequestException: Co... 2026-04-04 23:34:46.094555992+08:00   stdout  6fb1c5cb-a02c-404c-b212-6535f52829d9     10.0.2.100  ...  1C08B0ABB1752FC7-DE4D1  cn-hongkong.10.0.2.59  cn-hongkong.10.0.2.59         10.0.2.59  cfbbc0eabc19d43c0a6fb6889b4451ad0
+336887         ---> System.Net.Sockets.SocketException... 2026-04-04 23:34:46.094558501+08:00   stdout  6fb1c5cb-a02c-404c-b212-6535f52829d9     10.0.2.100  ...  1C08B0ABB1752FC7-DE4D1  cn-hongkong.10.0.2.59  cn-hongkong.10.0.2.59         10.0.2.59  cfbbc0eabc19d43c0a6fb6889b4451ad0
+336888           at System.Net.Sockets.Socket.Awaitabl... 2026-04-04 23:34:46.094561505+08:00   stdout  6fb1c5cb-a02c-404c-b212-6535f52829d9     10.0.2.100  ...  1C08B0ABB1752FC7-DE4D1  cn-hongkong.10.0.2.59  cn-hongkong.10.0.2.59         10.0.2.59  cfbbc0eabc19d43c0a6fb6889b4451ad0
+...                                                   ...                                 ...      ...                                   ...            ...  ...                     ...                    ...                    ...               ...                                ...
+429091                 fail: cart.services.CartService[0] 2026-04-04 23:34:52.489011995+08:00   stdout  6fb1c5cb-a02c-404c-b212-6535f52829d9     10.0.2.100  ...  1C08B0ABB1752FC7-DE4D7  cn-hongkong.10.0.2.59  cn-hongkong.10.0.2.59         10.0.2.59  cfbbc0eabc19d43c0a6fb6889b4451ad0
+429093        System.Net.Http.HttpRequestException: Co... 2026-04-04 23:34:52.489025160+08:00   stdout  6fb1c5cb-a02c-404c-b212-6535f52829d9     10.0.2.100  ...  1C08B0ABB1752FC7-DE4D7  cn-hongkong.10.0.2.59  cn-hongkong.10.0.2.59         10.0.2.59  cfbbc0eabc19d43c0a6fb6889b4451ad0
+429094         ---> System.Net.Sockets.SocketException... 2026-04-04 23:34:52.489028873+08:00   stdout  6fb1c5cb-a02c-404c-b212-6535f52829d9     10.0.2.100  ...  1C08B0ABB1752FC7-DE4D7  cn-hongkong.10.0.2.59  cn-hongkong.10.0.2.59         10.0.2.59  cfbbc0eabc19d43c0a6fb6889b4451ad0
+429095           at System.Net.Sockets.Socket.Awaitabl... 2026-04-04 23:34:52.489032891+08:00   stdout  6fb1c5cb-a02c-404c-b212-6535f52829d9     10.0.2.100  ...  1C08B0ABB1752FC7-DE4D7  cn-hongkong.10.0.2.59  cn-hongkong.10.0.2.59         10.0.2.59  cfbbc0eabc19d43c0a6fb6889b4451ad0
+429099           --- End of inner exception stack trac... 2026-04-04 23:34:52.489044558+08:00   stdout  6fb1c5cb-a02c-404c-b212-6535f52829d9     10.0.2.100  ...  1C08B0ABB1752FC7-DE4D7  cn-hongkong.10.0.2.59  cn-hongkong.10.0.2.59         10.0.2.59  cfbbc0eabc19d43c0a6fb6889b4451ad0
+
+[1933 rows x 15 columns]
+
+**Note**: The printed pandas DataFrame is truncated due to its size. Only **10 rows** are displayed, which may introduce observation bias due to the incomplete table. If you want to comprehensively understand the details without bias, please ask Executor using `df.head(X)` to display more rows.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:00:44.572[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m103[0m - [1m--------------------------------------------------------------------------------
+### Step[7]
+Analysis: The log analysis revealed 1,933 error logs related to the `cart` and `currency` services during the alert time window. These logs include messages indicating connection failures and network-related issues, such as `HttpRequestException` and `SocketException`. The errors primarily involve the `cart.services.InventoryServiceClient` and `cart.services.CartService`, suggesting that the `cart` service is experiencing issues when interacting with the inventory service. This aligns with the anomalies observed in metrics and traces, pointing to the `cart` service as the root cause component. The root cause reason appears to be network-related issues, specifically connection failures when calling the inventory service.
+Instruction: The root cause of the issue is the `cart` service experiencing network-related issues, specifically connection failures when interacting with the inventory service. This is evidenced by elevated error rates in metrics, traces showing errors in `CartService` operations, and logs indicating `HttpRequestException` and `SocketException`. The root cause reason is `dbNetworkLatency` or `networkPolicyIsolation` affecting the `cart` service.
+--------------------------------------------------------------------------------[0m
+[32m2026-06-13 09:00:50.524[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.rca_agent[0m:[36mrun[0m:[36m13[0m - [1mResult: {
+    "root_cause_entities": ["cart"],
+    "root_cause_types": ["dbNetworkLatency"]
+}[0m
+[32m2026-06-13 09:00:50.529[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m200[0m - [1mTrajectory has been saved to test/monitor/rca100/agent-batch3-gpt-4o/2026-06-13_08-43-09/trajectory/2026-06-13_08-43-09_#70-1.ipynb[0m
+[32m2026-06-13 09:00:50.531[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m204[0m - [1mPrompt has been saved to test/monitor/rca100/agent-batch3-gpt-4o/2026-06-13_08-43-09/prompt/2026-06-13_08-43-09_#70-1.json[0m
+[32m2026-06-13 09:00:50.533[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m231[0m - [1mPrediction: {
+    "root_cause_entities": ["cart"],
+    "root_cause_types": ["dbNetworkLatency"]
+}[0m
+[32m2026-06-13 09:00:50.533[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m232[0m - [1mGround Truth: {"root_cause_entities": ["inventory"], "root_cause_types": ["cpuFullLoad"]}[0m
+[32m2026-06-13 09:00:50.534[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m233[0m - [1mPassed: [][0m
+[32m2026-06-13 09:00:50.534[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m234[0m - [1mFailed: ["entities: expected {'inventory'}, got {'cart'}", "types: expected {'cpuFullLoad'}, got {'dbNetworkLatency'}"][0m
+[32m2026-06-13 09:00:50.534[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m235[0m - [1mScore: 0.0[0m
