@@ -58,7 +58,10 @@ Please first review your previous reasoning process to infer an exact answer of 
 Note that all the root cause components and reasons must be selected from the provided candidates. Do not reply 'unknown' or 'null' or 'not found' in the JSON. Do not be too conservative in selecting the root cause components and reasons. Be decisive to infer a possible answer based on your current observation."""
 
 def control_loop(objective:str, plan:str, ap, bp, logger, max_step = 15, max_turn = 3) -> str:
-   
+
+    # Use dataset-specific summary template if available
+    summary_tpl = getattr(bp, 'summary', summary)
+
     prompt = [
             {'role': 'system', 'content': system.format(objective=objective,
                                                         format=format,
@@ -102,7 +105,7 @@ def control_loop(objective:str, plan:str, ap, bp, logger, max_step = 15, max_tur
             if completed == "True":
                 kernel.reset()
                 prompt.append({'role': 'assistant', 'content': response_raw})
-                prompt.append({'role': 'user', 'content': summary.format(objective=objective,
+                prompt.append({'role': 'user', 'content': summary_tpl.format(objective=objective,
                                                                                 cand=bp.cand)})
                 answer = get_chat_completion(
                     messages=prompt,
@@ -126,7 +129,7 @@ def control_loop(objective:str, plan:str, ap, bp, logger, max_step = 15, max_tur
 
         except Exception as e:
             logger.error(e)
-            prompt.append({'role': 'assistant', 'content': response_raw})
+            prompt.append({'role': 'assistant', 'content': response_raw if 'response_raw' in dir() else ''})
             prompt.append({'role': 'user', 'content': f"{str(e)}\nPlease provide your analysis in requested JSON format."})
             if 'context_length_exceeded' in str(e):
                 logger.warning("Token length exceeds the limit.")
@@ -135,7 +138,7 @@ def control_loop(objective:str, plan:str, ap, bp, logger, max_step = 15, max_tur
 
     logger.warning("Max steps reached. Please check the history.")
     kernel.reset()
-    final_prompt = {'role': 'user', 'content': summary.format(objective=objective,
+    final_prompt = {'role': 'user', 'content': summary_tpl.format(objective=objective,
                                                                     cand=bp.cand).replace('Now, you have decided to finish your reasoning process. ', 'Now, the maximum steps of your reasoning have been reached. ')}
     if prompt[-1]['role'] == 'user':
         prompt[-1]['content'] = final_prompt['content']

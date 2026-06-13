@@ -5,7 +5,7 @@ import argparse
 from tqdm import tqdm
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, project_root)
-from main.evaluate import evaluate
+from main.evaluate import evaluate, evaluate_rca100
 from rca.api_router import configs
 
 from datetime import datetime
@@ -31,17 +31,47 @@ def main(args, uid, dataset):
         import rca.baseline.rca_agent.prompt.basic_prompt_Bank as bp
     elif dataset == "Market/cloudbed-1" or dataset == "Market/cloudbed-2":
         import rca.baseline.rca_agent.prompt.basic_prompt_Market as bp
+    elif dataset == "rca100":
+        import rca.baseline.rca_agent.prompt.basic_prompt_rca100 as bp
 
-    inst_file = f"dataset/{dataset}/query.csv"
-    gt_file = f"dataset/{dataset}/record.csv"
     eval_file = f"test/result/{dataset}/agent-{args.tag}-{configs['MODEL'].split('/')[-1]}.csv"
     obs_path = f"test/monitor/{dataset}/agent-{args.tag}-{configs['MODEL'].split('/')[-1]}"
     unique_obs_path = f"{obs_path}/{uid}"
 
-    instruct_data = pd.read_csv(inst_file)
-    gt_data = pd.read_csv(gt_file)
-    if not os.path.exists(inst_file) or not os.path.exists(gt_file):
-        raise FileNotFoundError(f"Please download the dataset first.")
+    if dataset == "rca100":
+        # RCA100: build task list from per-case task.json files
+        cases_dir = "rca100/cases"
+        if not os.path.isdir(cases_dir):
+            raise FileNotFoundError(f"Please download the RCA100 dataset first. Expected: {cases_dir}/")
+        task_rows = []
+        task_dirs = sorted([d for d in os.listdir(cases_dir) if os.path.isdir(os.path.join(cases_dir, d)) and d.startswith('t')])
+        for tid in task_dirs:
+            task_json_path = os.path.join(cases_dir, tid, "task.json")
+            if os.path.exists(task_json_path):
+                with open(task_json_path, 'r', encoding='utf-8') as f:
+                    tdata = json.load(f)
+                task_rows.append({
+                    "task_index": tdata.get("task_id", tid),
+                    "instruction": tdata.get("prompt_text", ""),
+                    "scoring_points": "",  # RCA100 has no scoring_points
+                    "task_id_str": tid,
+                })
+        instruct_data = pd.DataFrame(task_rows)
+        # RCA100: load ground truth from answer_key directory
+        gt_dir = "rca100/answer_key"
+        gt_data = {}
+        if os.path.isdir(gt_dir):
+            for f in os.listdir(gt_dir):
+                if f.endswith('.gt.json'):
+                    tid = f.replace('.gt.json', '')
+                    gt_data[tid] = os.path.join(gt_dir, f)
+    else:
+        inst_file = f"dataset/{dataset}/query.csv"
+        gt_file = f"dataset/{dataset}/record.csv"
+        if not os.path.exists(inst_file) or not os.path.exists(gt_file):
+            raise FileNotFoundError(f"Please download the dataset first.")
+        instruct_data = pd.read_csv(inst_file)
+        gt_data = pd.read_csv(gt_file)
 
     if not os.path.exists(f"{unique_obs_path}/history"):
         os.makedirs(f"{unique_obs_path}/history")
@@ -61,12 +91,14 @@ def main(args, uid, dataset):
         "easy": 0,
         "middle": 0,
         "hard": 0,
+        "rca100": 0,
     }
     nums = {
         "total": 0,
         "easy": 0,
         "middle": 0,
         "hard": 0,
+        "rca100": 0,
     }
 
     signal.signal(signal.SIGALRM, handler)
@@ -116,16 +148,26 @@ def main(args, uid, dataset):
         
         instruction = row["instruction"]
         task_index = row["task_index"]
-        scoring_points = row["scoring_points"]
-        task_id = int(task_index.split('_')[1])
+
+        # RCA100: prepend task directory path to instruction so the agent knows where data lives
+        if dataset == "rca100" and row.get("task_id_str"):
+            task_dir = f"rca100/cases/{row['task_id_str']}"
+            instruction = f"[Task directory: {task_dir}]\n{instruction}"
+        scoring_points = row["scoring_points"] if pd.notna(row.get("scoring_points", None)) and row.get("scoring_points", "") != "" else None
         best_score = 0
 
-        if task_id <= 3:
-            catalog = "easy"
-        elif task_id <= 6:
-            catalog = "middle"
-        elif task_id <= 7:
-            catalog = "hard"
+        if dataset == "rca100":
+            # RCA100: task_index is like "t001", no easy/middle/hard catalog
+            task_num = int(task_index.replace('t', ''))
+            catalog = "rca100"
+        else:
+            task_num = int(task_index.split('_')[1])
+            if task_num <= 3:
+                catalog = "easy"
+            elif task_num <= 6:
+                catalog = "middle"
+            elif task_num <= 7:
+                catalog = "hard"
 
         for i in range(args.sample_num):
             uuid = uid + f"_#{idx}-{i}"
@@ -161,33 +203,78 @@ def main(args, uid, dataset):
                     json.dump({"messages": prompt}, f, ensure_ascii=False, indent=4)
                 logger.info(f"Prompt has been saved to {promptfile}")
 
-                new_eval_df = pd.DataFrame([{"row_id": idx,
-                                            "task_index": task_index,
-                                            "instruction": instruction, 
-                                            "prediction": prediction,
-                                            "groundtruth": '\n'.join([f'{col}: {gt_data.iloc[idx][col]}' for col in gt_data.columns if col != 'description']),
-                                            "passed": "N/A",
-                                            "failed": "N/A", 
-                                            "score": "N/A"}])
-                eval_df = pd.concat([eval_df, new_eval_df], 
-                                    ignore_index=True)
-                eval_df.to_csv(eval_file, 
-                               index=False)
+                # Build ground truth string and evaluate
+                if dataset == "rca100":
+                    # RCA100 evaluation
+                    tid = row.get("task_id_str", task_index)
+                    gt_path = gt_data.get(tid) if isinstance(gt_data, dict) else None
+                    if gt_path:
+                        with open(gt_path, 'r', encoding='utf-8') as f:
+                            gt_json = json.load(f)
+                        gt_str = json.dumps({k: gt_json[k] for k in ("root_cause_entities", "root_cause_types") if k in gt_json}, ensure_ascii=False)
+                    else:
+                        gt_str = "N/A"
 
-                passed_criteria, failed_criteria, score = evaluate(prediction, scoring_points)
-                
-                logger.info(f"Prediction: {prediction}")
-                logger.info(f"Scoring Points: {scoring_points}")
-                logger.info(f"Passed Criteria: {passed_criteria}")
-                logger.info(f"Failed Criteria: {failed_criteria}")
-                logger.info(f"Score: {score}")
-                best_score = max(best_score, score)
+                    new_eval_df = pd.DataFrame([{"row_id": idx,
+                                                "task_index": task_index,
+                                                "instruction": instruction,
+                                                "prediction": prediction,
+                                                "groundtruth": gt_str,
+                                                "passed": "N/A",
+                                                "failed": "N/A",
+                                                "score": "N/A"}])
+                    eval_df = pd.concat([eval_df, new_eval_df],
+                                        ignore_index=True)
 
-                eval_df.loc[eval_df.index[-1], "passed"] = '\n'.join(passed_criteria)
-                eval_df.loc[eval_df.index[-1], "failed"] = '\n'.join(failed_criteria)
-                eval_df.loc[eval_df.index[-1], "score"] = score
-                eval_df.to_csv(eval_file, 
-                               index=False)
+                    if gt_path:
+                        passed_criteria, failed_criteria, score = evaluate_rca100(prediction, gt_path)
+                        logger.info(f"Prediction: {prediction}")
+                        logger.info(f"Ground Truth: {gt_str}")
+                        logger.info(f"Passed: {passed_criteria}")
+                        logger.info(f"Failed: {failed_criteria}")
+                        logger.info(f"Score: {score}")
+                        best_score = max(best_score, score)
+
+                        eval_df.loc[eval_df.index[-1], "passed"] = '\n'.join(passed_criteria)
+                        eval_df.loc[eval_df.index[-1], "failed"] = '\n'.join(failed_criteria)
+                        eval_df.loc[eval_df.index[-1], "score"] = score
+                    else:
+                        logger.info(f"Task {task_index} completed (no gt). Prediction: {prediction[:200]}...")
+
+                    eval_df.to_csv(eval_file, index=False)
+
+                elif gt_data is not None:
+                    gt_str = '\n'.join([f'{col}: {gt_data.iloc[idx][col]}' for col in gt_data.columns if col != 'description'])
+
+                    new_eval_df = pd.DataFrame([{"row_id": idx,
+                                                "task_index": task_index,
+                                                "instruction": instruction,
+                                                "prediction": prediction,
+                                                "groundtruth": gt_str,
+                                                "passed": "N/A",
+                                                "failed": "N/A",
+                                                "score": "N/A"}])
+                    eval_df = pd.concat([eval_df, new_eval_df],
+                                        ignore_index=True)
+                    eval_df.to_csv(eval_file,
+                                   index=False)
+
+                    if scoring_points:
+                        passed_criteria, failed_criteria, score = evaluate(prediction, scoring_points)
+                        logger.info(f"Prediction: {prediction}")
+                        logger.info(f"Scoring Points: {scoring_points}")
+                        logger.info(f"Passed Criteria: {passed_criteria}")
+                        logger.info(f"Failed Criteria: {failed_criteria}")
+                        logger.info(f"Score: {score}")
+                        best_score = max(best_score, score)
+
+                        eval_df.loc[eval_df.index[-1], "passed"] = '\n'.join(passed_criteria)
+                        eval_df.loc[eval_df.index[-1], "failed"] = '\n'.join(failed_criteria)
+                        eval_df.loc[eval_df.index[-1], "score"] = score
+                        eval_df.to_csv(eval_file,
+                                       index=False)
+                    else:
+                        logger.info(f"Task {task_index} completed. Prediction: {prediction[:200]}...")
                 
                 temp_scores = scores.copy()
                 temp_scores[catalog] += best_score

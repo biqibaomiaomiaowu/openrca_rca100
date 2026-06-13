@@ -1,0 +1,184 @@
+[32m2026-05-08 14:51:09.614[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.rca_agent[0m:[36mrun[0m:[36m11[0m - [1mObjective: On March 10, 2021, between 07:00 and 07:30, a single failure was detected. The root cause component responsible for this failure is currently unknown. Please identify the root cause component.[0m
+[32m2026-05-08 14:51:15.218[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m100[0m - [1m--------------------------------------------------------------------------------
+### Step[1]
+Analysis: None
+Instruction: List all available KPI names and their corresponding components from the `metric_container.csv` file for March 10, 2021. This will help identify which KPIs and components are relevant for further analysis.
+--------------------------------------------------------------------------------[0m
+[32m2026-05-08 14:51:25.128[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m123[0m - [1m--------------------------------------------------------------------------------
+Step[1]
+### Observation:
+The `metric_container.csv` file for March 10, 2021, contains 1,701 unique combinations of KPI names and their corresponding components (cmdb_id). These include KPIs related to CPU utilization, Tomcat request metrics, and container-specific metrics, among others. The components include various Tomcat instances (e.g., Tomcat03, Tomcat04) and Docker containers (e.g., dockerB2). For a detailed analysis, specific KPIs and components can be filtered as needed.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+kpi_name   cmdb_id
+0                            OSLinux-CPU_CPU_CPUCpuUtil  Tomcat04
+1     Tomcat-Requests_7441-"http-nio-8003"_RequestCo...  Tomcat03
+2     Tomcat-Requests_7441-"http-nio-8003"_Processin...  Tomcat03
+3     Tomcat-Requests_7441-"http-nio-8003"_MaxTimeRe...  Tomcat03
+4     Tomcat-Requests_7441-"http-nio-8003"_ErrorCoun...  Tomcat03
+...                                                 ...       ...
+1696  Container-DOCKER_CONTAINER_d27123361435--bcou-...  dockerB2
+1697  Container-DOCKER_CONTAINER_d27123361435--bcou-...  dockerB2
+1698  Container-DOCKER_CONTAINER_d27123361435--bcou-...  dockerB2
+1699  Container-DOCKER_CONTAINER_d27123361435--bcou-...  dockerB2
+1700  Container-DOCKER_CONTAINER_d27123361435--bcou-...  dockerB2
+
+[1701 rows x 2 columns]
+
+**Note**: The printed pandas DataFrame is truncated due to its size. Only **10 rows** are displayed, which may introduce observation bias due to the incomplete table. If you want to comprehensively understand the details without bias, please ask Executor using `df.head(X)` to display more rows.
+--------------------------------------------------------------------------------[0m
+[32m2026-05-08 14:51:32.629[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m100[0m - [1m--------------------------------------------------------------------------------
+### Step[2]
+Analysis: The `metric_container.csv` file for March 10, 2021, contains 1,701 unique combinations of KPI names and components. Among these, there are KPIs related to CPU utilization, Tomcat request metrics, and container-specific metrics. Components include Tomcat instances and Docker containers. To proceed, we need to focus on the possible root cause components provided in the domain knowledge, such as Tomcat01, Tomcat02, Tomcat03, Tomcat04, etc., and their associated KPIs.
+Instruction: Filter the data in `metric_container.csv` to include only the KPIs and components that match the possible root cause components (e.g., Tomcat01, Tomcat02, Tomcat03, Tomcat04, etc.). Then, aggregate each KPI for each component to obtain time series classified by 'component-KPI'. Calculate the global P95 threshold for each 'component-KPI' time series using the entire day's data.
+--------------------------------------------------------------------------------[0m
+[32m2026-05-08 14:51:43.476[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m123[0m - [1m--------------------------------------------------------------------------------
+Step[2]
+### Observation:
+The filtered data from `metric_container.csv` includes 1,651 unique 'component-KPI' combinations that match the possible root cause components. For each 'component-KPI' time series, the global P95 threshold was calculated using the entire day's data. These thresholds represent the 95th percentile value for each KPI across the respective components, providing a benchmark for identifying abnormal behavior.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+component-KPI  P95_threshold
+0         IG01-JVM-Memory_7778_JVM_Memory_HeapMemoryMax   2.040136e+09
+1       IG01-JVM-Memory_7778_JVM_Memory_HeapMemoryUsage   4.186372e+01
+2        IG01-JVM-Memory_7778_JVM_Memory_HeapMemoryUsed   8.511027e+08
+3      IG01-JVM-Memory_7778_JVM_Memory_NoHeapMemoryUsed   5.793089e+07
+4        IG01-JVM-Operating System_7778_JVM_JVM_CPULoad   5.267200e-01
+...                                                 ...            ...
+1646              apache02-OSLinux-OSLinux_SWAP_SWAP_Si   0.000000e+00
+1647              apache02-OSLinux-OSLinux_SWAP_SWAP_So   0.000000e+00
+1648  apache02-OSLinux-OSLinux_SYSTEM_SYSTEM_Check-D...   1.000000e+00
+1649  apache02-OSLinux-OSLinux_SYSTEM_SYSTEM_Check-H...   1.000000e+00
+1650        apache02-OSLinux-OSLinux_ZABBIX_Host_Uptime   6.586319e+06
+
+[1651 rows x 2 columns]
+
+**Note**: The printed pandas DataFrame is truncated due to its size. Only **10 rows** are displayed, which may introduce observation bias due to the incomplete table. If you want to comprehensively understand the details without bias, please ask Executor using `df.head(X)` to display more rows.
+--------------------------------------------------------------------------------[0m
+[32m2026-05-08 14:51:48.376[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m100[0m - [1m--------------------------------------------------------------------------------
+### Step[3]
+Analysis: The global P95 thresholds for each 'component-KPI' time series have been calculated using the entire day's data. This provides a benchmark for identifying anomalies. The next step is to filter the data to include only the time duration of interest (March 10, 2021, between 07:00 and 07:30) and identify anomalies by comparing the data points against the calculated thresholds.
+Instruction: Filter the 'component-KPI' time series data to include only the time duration between 07:00 and 07:30 on March 10, 2021. Identify anomalies by comparing the data points against the global P95 thresholds for each 'component-KPI'.
+--------------------------------------------------------------------------------[0m
+[32m2026-05-08 14:52:06.166[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m123[0m - [1m--------------------------------------------------------------------------------
+Step[3]
+### Observation:
+Between 07:00 and 07:30 on March 10, 2021, 199 anomalous data points were identified across various 'component-KPI' time series. These anomalies were detected by comparing the data points against their respective global P95 thresholds. The anomalies span multiple components, including Mysql02, Tomcat02, Mysql01, and MG01, and involve KPIs such as memory usage, CPU wait time, and disk operations. These anomalies indicate potential performance issues during this time period.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+timestamp   cmdb_id                                           kpi_name    value                                      component-KPI  P95_threshold  is_anomalous
+0   2021-03-10 07:09:00+08:00   Mysql02       OSLinux-OSLinux_MEMORY_MEMORY_NoCacheMemPerc  89.5067  Mysql02-OSLinux-OSLinux_MEMORY_MEMORY_NoCacheM...      89.492800          True
+1   2021-03-10 07:23:00+08:00   Mysql02       OSLinux-OSLinux_MEMORY_MEMORY_NoCacheMemPerc  89.5067  Mysql02-OSLinux-OSLinux_MEMORY_MEMORY_NoCacheM...      89.492800          True
+2   2021-03-10 07:29:00+08:00   Mysql02       OSLinux-OSLinux_MEMORY_MEMORY_NoCacheMemPerc  89.5067  Mysql02-OSLinux-OSLinux_MEMORY_MEMORY_NoCacheM...      89.492800          True
+3   2021-03-10 07:01:00+08:00  Tomcat02                             OSLinux-CPU_CPU_CPUWio   0.5236                    Tomcat02-OSLinux-CPU_CPU_CPUWio       0.486180          True
+4   2021-03-10 07:30:00+08:00   Mysql01      Mysql-MySQL_3306_Innodb os log pending fsyncs   1.0000  Mysql01-Mysql-MySQL_3306_Innodb os log pending...       0.000000          True
+..                        ...       ...                                                ...      ...                                                ...            ...           ...
+194 2021-03-10 07:16:00+08:00      MG01  OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKPer...   0.6000  MG01-OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_D...       0.300000          True
+195 2021-03-10 07:28:00+08:00      MG01    OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKRTps   0.2000  MG01-OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_D...       0.183300          True
+196 2021-03-10 07:28:00+08:00      MG01    OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKRead   8.0000  MG01-OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_D...       6.000000          True
+197 2021-03-10 07:14:00+08:00      MG01    OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKWTps   1.1667  MG01-OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_D...       1.116700          True
+198 2021-03-10 07:14:00+08:00      MG01   OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKWrite  16.8000  MG01-OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_D...      14.873315          True
+
+[199 rows x 7 columns]
+
+**Note**: The printed pandas DataFrame is truncated due to its size. Only **10 rows** are displayed, which may introduce observation bias due to the incomplete table. If you want to comprehensively understand the details without bias, please ask Executor using `df.head(X)` to display more rows.
+--------------------------------------------------------------------------------[0m
+[32m2026-05-08 14:52:13.480[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m100[0m - [1m--------------------------------------------------------------------------------
+### Step[4]
+Analysis: 199 anomalous data points were identified across various 'component-KPI' time series between 07:00 and 07:30 on March 10, 2021. These anomalies span multiple components, including Mysql02, Tomcat02, Mysql01, and MG01, and involve KPIs such as memory usage, CPU wait time, and disk operations. To narrow down the root cause, we need to identify faults by filtering out isolated noise spikes and focusing on consecutive anomalies that significantly exceed the thresholds.
+Instruction: Identify faults by grouping consecutive anomalies for each 'component-KPI' time series. Filter out isolated noise spikes and exclude faults where the maximum value in the sub-series only slightly exceeds the threshold (e.g., threshold breach <= 50% of the extremal).
+--------------------------------------------------------------------------------[0m
+[32m2026-05-08 14:52:26.796[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m123[0m - [1m--------------------------------------------------------------------------------
+Step[4]
+### Observation:
+The analysis identified multiple faults across various 'component-KPI' time series during the time window of 07:00 to 07:30 on March 10, 2021. These faults were grouped based on consecutive anomalies and filtered to exclude isolated noise spikes and minor threshold breaches. The resulting faults show significant threshold breaches (exceeding 50% of the extremal value) and span components such as IG01, IG02, Mysql01, Mysql02, Tomcat01, Tomcat02, apache01, and apache02. These faults indicate potential performance issues that require further investigation.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+component-KPI  fault_group                start_time                  end_time  max_value  threshold  threshold_breach
+0   IG01-OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_D...           45 2021-03-10 07:19:00+08:00 2021-03-10 07:19:00+08:00     0.8167   0.200000          0.755112
+1   IG01-OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_D...           45 2021-03-10 07:19:00+08:00 2021-03-10 07:19:00+08:00    47.7333   6.133325          0.871508
+2   IG01-OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_D...           43 2021-03-10 07:20:00+08:00 2021-03-10 07:20:00+08:00    66.0000  20.000000          0.696970
+3   IG02-OSLinux-OSLinux_NETWORK_NETWORK_TCP-CLOSE...           19 2021-03-10 07:05:00+08:00 2021-03-10 07:05:00+08:00     1.0000   0.000000          1.000000
+4                 Mysql01-Mysql-MySQL_3306_Com Insert            3 2021-03-10 07:00:00+08:00 2021-03-10 07:00:00+08:00     0.2712   0.000000          1.000000
+5                 Mysql01-Mysql-MySQL_3306_Com Insert            4 2021-03-10 07:30:00+08:00 2021-03-10 07:30:00+08:00     0.2623   0.000000          1.000000
+6   Mysql01-Mysql-MySQL_3306_Innodb data pending f...            4 2021-03-10 07:30:00+08:00 2021-03-10 07:30:00+08:00     1.0000   0.000000          1.000000
+7   Mysql01-Mysql-MySQL_3306_Innodb os log pending...            2 2021-03-10 07:30:00+08:00 2021-03-10 07:30:00+08:00     1.0000   0.000000          1.000000
+8   Mysql01-OSLinux-OSLinux_LOCALDISK_LOCALDISK-sd...           45 2021-03-10 07:05:00+08:00 2021-03-10 07:05:00+08:00    68.8000  18.000000          0.738372
+9   Mysql01-OSLinux-OSLinux_LOCALDISK_LOCALDISK-sd...           47 2021-03-10 07:26:00+08:00 2021-03-10 07:26:00+08:00    36.8000  18.000000          0.510870
+10  Mysql02-Mysql-MySQL_3306_CurrentSQLMaxRunningTime            4 2021-03-10 07:26:00+08:00 2021-03-10 07:26:00+08:00     1.0000   0.000000          1.000000
+11         Mysql02-Mysql-MySQL_3306_Handler Read Next            4 2021-03-10 07:26:00+08:00 2021-03-10 07:27:00+08:00    14.9153   0.476680          0.968041
+12         Mysql02-Mysql-MySQL_3306_Handler Read Next            5 2021-03-10 07:29:00+08:00 2021-03-10 07:30:00+08:00     9.5333   0.476680          0.949998
+13          Mysql02-Mysql-MySQL_3306_Handler Read Rnd            5 2021-03-10 07:26:00+08:00 2021-03-10 07:27:00+08:00     0.7627   0.066700          0.912548
+14          Mysql02-Mysql-MySQL_3306_Handler Read Rnd            6 2021-03-10 07:29:00+08:00 2021-03-10 07:30:00+08:00     0.2167   0.066700          0.692201
+15      Mysql02-Mysql-MySQL_3306_LongestTrxActiveTime           18 2021-03-10 07:26:00+08:00 2021-03-10 07:26:00+08:00     1.0000   0.000000          1.000000
+16             Mysql02-Mysql-MySQL_3306_Opened Tables           17 2021-03-10 07:26:00+08:00 2021-03-10 07:27:00+08:00     0.8033   0.033300          0.958546
+17             Mysql02-Mysql-MySQL_3306_Opened Tables           18 2021-03-10 07:29:00+08:00 2021-03-10 07:29:00+08:00     0.0667   0.033300          0.500750
+18  Mysql02-Mysql-MySQL_3306_Opened table definitions           17 2021-03-10 07:26:00+08:00 2021-03-10 07:26:00+08:00     0.1639   0.000000          1.000000
+19                Mysql02-Mysql-MySQL_3306_Sort Range           13 2021-03-10 07:26:00+08:00 2021-03-10 07:27:00+08:00     0.7627   0.067140          0.911971
+20                Mysql02-Mysql-MySQL_3306_Sort Range           14 2021-03-10 07:29:00+08:00 2021-03-10 07:30:00+08:00     0.2167   0.067140          0.690171
+21   Mysql02-Mysql-MySQL_3306_Table open cache misses           14 2021-03-10 07:26:00+08:00 2021-03-10 07:27:00+08:00     0.8033   0.033300          0.958546
+22   Mysql02-Mysql-MySQL_3306_Table open cache misses           15 2021-03-10 07:29:00+08:00 2021-03-10 07:29:00+08:00     0.0667   0.033300          0.500750
+23  Mysql02-OSLinux-OSLinux_LOCALDISK_LOCALDISK-sd...           15 2021-03-10 07:19:00+08:00 2021-03-10 07:19:00+08:00     0.8000   0.320000          0.600000
+24  Mysql02-OSLinux-OSLinux_LOCALDISK_LOCALDISK-sd...           51 2021-03-10 07:01:00+08:00 2021-03-10 07:01:00+08:00     5.0000   1.000000          0.800000
+25  Mysql02-OSLinux-OSLinux_LOCALDISK_LOCALDISK-sd...           52 2021-03-10 07:03:00+08:00 2021-03-10 07:03:00+08:00     5.0000   1.000000          0.800000
+26  Mysql02-OSLinux-OSLinux_LOCALDISK_LOCALDISK-sd...           52 2021-03-10 07:05:00+08:00 2021-03-10 07:05:00+08:00     8.0000   0.000000          1.000000
+27  Mysql02-OSLinux-OSLinux_LOCALDISK_LOCALDISK-sd...           15 2021-03-10 07:25:00+08:00 2021-03-10 07:25:00+08:00     0.2000   0.050000          0.750000
+28  Mysql02-OSLinux-OSLinux_LOCALDISK_LOCALDISK-sd...           15 2021-03-10 07:25:00+08:00 2021-03-10 07:25:00+08:00    22.4000   1.973333          0.911905
+29  Mysql02-OSLinux-OSLinux_LOCALDISK_LOCALDISK-sd...           60 2021-03-10 07:27:00+08:00 2021-03-10 07:27:00+08:00    26.0000   9.000000          0.653846
+30  Tomcat01-OSLinux-OSLinux_LOCALDISK_LOCALDISK-s...           37 2021-03-10 07:30:00+08:00 2021-03-10 07:30:00+08:00    11.0000   2.000000          0.818182
+31  Tomcat02-OSLinux-OSLinux_LOCALDISK_LOCALDISK-s...           51 2021-03-10 07:23:00+08:00 2021-03-10 07:23:00+08:00    55.0000  15.000000          0.727273
+32           apache01-OSLinux-CPU_CPU-2_SingleCpuUtil           59 2021-03-10 07:14:00+08:00 2021-03-10 07:14:00+08:00    99.6848  44.438480          0.554210
+33  apache02-OSLinux-OSLinux_LOCALDISK_LOCALDISK-s...           28 2021-03-10 07:18:00+08:00 2021-03-10 07:18:00+08:00     5.0000   1.000000          0.800000
+34  apache02-OSLinux-OSLinux_NETWORK_NETWORK_TCP-F...           20 2021-03-10 07:19:00+08:00 2021-03-10 07:19:00+08:00     9.0000   0.000000          1.000000
+--------------------------------------------------------------------------------[0m
+[32m2026-05-08 14:52:34.633[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m100[0m - [1m--------------------------------------------------------------------------------
+### Step[5]
+Analysis: Multiple faults have been identified across various 'component-KPI' time series during the specified time window. These faults span components such as IG01, IG02, Mysql01, Mysql02, Tomcat01, Tomcat02, apache01, and apache02. Since the issue describes a single failure, we need to determine the root cause level by identifying the fault with the most significant deviation from the threshold (>> 50%). Once the level is determined, trace analysis can be used to identify the root cause component among multiple faulty components at the same level.
+Instruction: Determine the fault level (e.g., node-level, container-level, or service-level) by identifying the fault with the most significant deviation from the threshold (>> 50%). Use this information to narrow down the root cause level for further analysis.
+--------------------------------------------------------------------------------[0m
+[32m2026-05-08 14:52:43.384[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m123[0m - [1m--------------------------------------------------------------------------------
+Step[5]
+### Observation:
+The fault with the most significant deviation from the threshold occurred at the node level, specifically in the 'IG02-OSLinux-OSLinux_NETWORK_NETWORK_TCP-CLOSE' KPI. This fault was detected at 07:05 on March 10, 2021, with a maximum value of 1.0, completely breaching the threshold of 0.0 (100% deviation). This indicates that the root cause is likely related to node-level network issues on IG02.
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+('node-level', component-KPI       IG02-OSLinux-OSLinux_NETWORK_NETWORK_TCP-CLOSE...
+fault_group                                                        19
+start_time                                  2021-03-10 07:05:00+08:00
+end_time                                    2021-03-10 07:05:00+08:00
+max_value                                                         1.0
+threshold                                                         0.0
+threshold_breach                                                  1.0
+Name: 3, dtype: object)
+--------------------------------------------------------------------------------[0m
+[32m2026-05-08 14:57:52.950[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m100[0m - [1m--------------------------------------------------------------------------------
+### Step[6]
+Analysis: The fault with the most significant deviation from the threshold occurred at the node level, specifically in the 'IG02-OSLinux-OSLinux_NETWORK_NETWORK_TCP-CLOSE' KPI. This fault was detected at 07:05 on March 10, 2021, with a 100% threshold breach. Since the issue describes a single failure and the fault is at the node level, the root cause is likely related to node-level network issues on IG02. Node-level failures do not propagate, and traces only capture communication between containers or services. Therefore, IG02 is the root cause component.
+Instruction: The root cause of the failure on March 10, 2021, between 07:00 and 07:30, is the node-level network issue on IG02. The specific fault occurred in the 'IG02-OSLinux-OSLinux_NETWORK_NETWORK_TCP-CLOSE' KPI at 07:05, with a 100% threshold breach.
+--------------------------------------------------------------------------------[0m
+[32m2026-05-08 14:57:57.288[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.rca_agent[0m:[36mrun[0m:[36m13[0m - [1mResult: {
+    "1": {
+        "root cause occurrence datetime": "2021-03-10 07:05:00",
+        "root cause component": "IG02",
+        "root cause reason": "network packet loss"
+    }
+}[0m
+[32m2026-05-08 14:57:57.293[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m119[0m - [1mTrajectory has been saved to test/monitor/Bank/agent-rca-gpt-4o/2026-05-08_13-12-27/trajectory/2026-05-08_13-12-27_#25-0.ipynb[0m
+[32m2026-05-08 14:57:57.294[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m123[0m - [1mPrompt has been saved to test/monitor/Bank/agent-rca-gpt-4o/2026-05-08_13-12-27/prompt/2026-05-08_13-12-27_#25-0.json[0m
+[32m2026-05-08 14:57:57.299[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m140[0m - [1mPrediction: {
+    "1": {
+        "root cause occurrence datetime": "2021-03-10 07:05:00",
+        "root cause component": "IG02",
+        "root cause reason": "network packet loss"
+    }
+}[0m
+[32m2026-05-08 14:57:57.299[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m141[0m - [1mScoring Points: The only predicted root cause component is apache02
+[0m
+[32m2026-05-08 14:57:57.299[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m142[0m - [1mPassed Criteria: [][0m
+[32m2026-05-08 14:57:57.300[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m143[0m - [1mFailed Criteria: ['apache02'][0m
+[32m2026-05-08 14:57:57.300[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m144[0m - [1mScore: 0.0[0m

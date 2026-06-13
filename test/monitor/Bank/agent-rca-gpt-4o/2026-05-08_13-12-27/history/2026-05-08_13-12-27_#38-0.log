@@ -1,0 +1,513 @@
+[32m2026-05-08 15:41:13.150[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.rca_agent[0m:[36mrun[0m:[36m11[0m - [1mObjective: During the specified time range of March 23, 2021, from 06:30 to 07:00, there was a single failure in the system. The exact time when the root cause occurred and the specific component involved in the failure are currently unknown. You are tasked with identifying the root cause occurrence datetime and the root cause component.[0m
+[32m2026-05-08 15:41:16.392[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m100[0m - [1m--------------------------------------------------------------------------------
+### Step[1]
+Analysis: None
+Instruction: List all available metric files in the directory 'dataset/Bank/telemetry/2021_03_23/metric/' to identify the relevant files for preprocessing.
+--------------------------------------------------------------------------------[0m
+[32m2026-05-08 15:41:21.882[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m123[0m - [1m--------------------------------------------------------------------------------
+Step[1]
+### Observation:
+```python
+"The available metric files in the directory 'dataset/Bank/telemetry/2021_03_23/metric/' are 'metric_container.csv' and 'metric_app.csv'."
+```
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+['metric_container.csv', 'metric_app.csv']
+--------------------------------------------------------------------------------[0m
+[32m2026-05-08 15:41:25.913[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m100[0m - [1m--------------------------------------------------------------------------------
+### Step[2]
+Analysis: The available metric files in the directory have been identified as 'metric_container.csv' and 'metric_app.csv'. These files contain telemetry data that can be used for preprocessing and further analysis. The next step is to understand the available KPIs in these files to proceed with threshold calculation and anomaly detection.
+Instruction: Load the 'metric_container.csv' file and list all unique KPIs (kpi_name) available in the file to understand the telemetry data structure and identify relevant KPIs for preprocessing.
+--------------------------------------------------------------------------------[0m
+[32m2026-05-08 15:41:34.998[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m123[0m - [1m--------------------------------------------------------------------------------
+Step[2]
+### Observation:
+```python
+"The 'metric_container.csv' file contains a wide variety of KPIs, including CPU usage, memory usage, disk I/O metrics, network metrics, filesystem metrics, MySQL performance metrics, JVM metrics, and container-specific metrics. These KPIs provide comprehensive telemetry data for system performance monitoring and analysis."
+```
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+['OSLinux-CPU_CPU_CPUCpuUtil'
+ 'OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKRTps'
+ 'OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKRead'
+ 'OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKWTps'
+ 'OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKWrite'
+ 'OSLinux-OSLinux_MEMORY_MEMORY_MEMUsedMemPerc'
+ 'OSLinux-OSLinux_NETWORK_NETWORK_TCP-CLOSE-WAIT'
+ 'OSLinux-OSLinux_NETWORK_NETWORK_TCP-FIN-WAIT'
+ 'OSLinux-OSLinux_NETWORK_ens160_NETBandwidthUtil'
+ 'OSLinux-OSLinux_NETWORK_ens160_NETInErr'
+ 'OSLinux-OSLinux_NETWORK_ens160_NETKBTotalPerSec'
+ 'OSLinux-OSLinux_NETWORK_ens160_NETOutErr'
+ 'OSLinux-OSLinux_NETWORK_ens160_NETPacketsIn'
+ 'OSLinux-OSLinux_NETWORK_ens160_NETPacketsOut'
+ 'OSLinux-OSLinux_PROCESS_PROCESS_PROCPPMemPerc'
+ 'OSLinux-OSLinux_SWAP_SWAP_SWPTotSwapUsedPercent'
+ 'OSLinux-OSLinux_SWAP_SWAP_Si' 'OSLinux-OSLinux_SWAP_SWAP_So'
+ 'Mysql-MySQL_3306_Open Files' 'Mysql-MySQL_3306_MySQL  Queries'
+ 'Mysql-MySQL_3306_MaxTrxRowsModified' 'Mysql-MySQL_3306_MaxConnections'
+ 'Mysql-MySQL_3306_Max trx rows locked'
+ 'Mysql-MySQL_3306_Max Used Connections'
+ 'Mysql-MySQL_3306_LongestTrxActiveTime' 'Mysql-MySQL_3306_Key Reads'
+ 'Mysql-MySQL_3306_Key Read Requests'
+ 'Mysql-MySQL_3306_Innodb row lock time max'
+ 'OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKPercentBusy'
+ 'Mysql-MySQL_3306_Innodb row lock time avg'
+ 'OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKBps'
+ 'OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKWTps'
+ 'OSLinux-OSLinux_FILESYSTEM_-_FSCapacity'
+ 'OSLinux-OSLinux_FILESYSTEM_-_FSInodeUsedPercent'
+ 'OSLinux-OSLinux_FILESYSTEM_-_FSUsedSpace'
+ 'OSLinux-OSLinux_FILESYSTEM_-boot_FSAvailableSpace'
+ 'OSLinux-OSLinux_FILESYSTEM_-boot_FSCapacity'
+ 'OSLinux-OSLinux_FILESYSTEM_-boot_FSInodeUsedPercent'
+ 'OSLinux-OSLinux_FILESYSTEM_-boot_FSUsedSpace'
+ 'OSLinux-OSLinux_FILESYSTEM_-cmbc_admin_FSAvailableSpace'
+ 'OSLinux-OSLinux_FILESYSTEM_-cmbc_admin_FSCapacity'
+ 'OSLinux-OSLinux_FILESYSTEM_-cmbc_admin_FSInodeUsedPercent'
+ 'OSLinux-OSLinux_FILESYSTEM_-cmbc_admin_FSUsedSpace'
+ 'OSLinux-OSLinux_FILESYSTEM_-home_FSAvailableSpace'
+ 'OSLinux-OSLinux_FILESYSTEM_-home_FSCapacity'
+ 'OSLinux-OSLinux_FILESYSTEM_-home_FSInodeUsedPercent'
+ 'OSLinux-OSLinux_FILESYSTEM_-home_FSUsedSpace'
+ 'OSLinux-OSLinux_FILESYSTEM_-tmp_FSAvailableSpace'
+ 'OSLinux-OSLinux_FILESYSTEM_-tmp_FSCapacity'
+ 'OSLinux-OSLinux_FILESYSTEM_-tmp_FSInodeUsedPercent'
+ 'OSLinux-OSLinux_FILESYSTEM_-tmp_FSUsedSpace'
+ 'OSLinux-OSLinux_FILESYSTEM_-tomcat_FSAvailableSpace'
+ 'OSLinux-OSLinux_FILESYSTEM_-tomcat_FSCapacity'
+ 'OSLinux-OSLinux_FILESYSTEM_-tomcat_FSInodeUsedPercent'
+ 'OSLinux-OSLinux_FILESYSTEM_-tomcat_FSUsedSpace'
+ 'OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKBps'
+ 'OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKPercentBusy'
+ 'OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKRTps'
+ 'OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKRead'
+ 'OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKWrite'
+ 'Mysql-MySQL_3306_Innodb row lock current waits'
+ 'Mysql-MySQL_3306_Innodb pages written'
+ 'Mysql-MySQL_3306_Innodb pages read' 'OSLinux-OSLinux_ZABBIX_Host_Uptime'
+ 'Mysql-MySQL_3306_Innodb log waits'
+ 'Mysql-MySQL_3306_Innodb dblwr writes'
+ 'Mysql-MySQL_3306_Innodb dblwr pages written'
+ 'Mysql-MySQL_3306_Innodb data written'
+ 'Mysql-MySQL_3306_Innodb data writes'
+ 'Mysql-MySQL_3306_Innodb data reads' 'Mysql-MySQL_3306_Innodb data read'
+ 'Mysql-MySQL_3306_Innodb data pending writes'
+ 'Mysql-MySQL_3306_Innodb data pending reads'
+ 'Mysql-MySQL_3306_Innodb data pending fsyncs'
+ 'Mysql-MySQL_3306_Innodb data fsyncs'
+ 'Mysql-MySQL_3306_Innodb buffer pool write requests'
+ 'Mysql-MySQL_3306_Innodb buffer pool wait free'
+ 'Mysql-MySQL_3306_Innodb buffer pool reads'
+ 'Mysql-MySQL_3306_Innodb buffer pool read requests'
+ 'Mysql-MySQL_3306_Innodb buffer pool read ahead rnd'
+ 'Mysql-MySQL_3306_Innodb buffer pool read ahead evicted'
+ 'Mysql-MySQL_3306_Innodb buffer pool read ahead'
+ 'Mysql-MySQL_3306_Innodb buffer pool pages total'
+ 'Mysql-MySQL_3306_Innodb buffer pool pages misc'
+ 'Mysql-MySQL_3306_Innodb buffer pool pages free'
+ 'Mysql-MySQL_3306_Innodb buffer pool pages flushed'
+ 'Mysql-MySQL_3306_Innodb buffer pool pages dirty'
+ 'Mysql-MySQL_3306_Innodb Row Lock Waits'
+ 'Mysql-MySQL_3306_Innodb Row Lock Time' 'Mysql-MySQL_3306_Handler Write'
+ 'OSLinux-OSLinux_SYSTEM_SYSTEM_Check-DefaultRoute'
+ 'OSLinux-OSLinux_SWAP_SWAP_SWPTotSwapSize'
+ 'OSLinux-OSLinux_PROCESS_zabbix-zabbix_agentd_PROCPPCPUPerc'
+ 'OSLinux-OSLinux_PROCESS_zabbix_PROCPPCount'
+ 'Mysql-MySQL_3306_Innodb pages created'
+ 'Mysql-MySQL_3306_Innodb os log written'
+ 'Mysql-MySQL_3306_Innodb os log pending writes'
+ 'Mysql-MySQL_3306_Innodb os log pending fsyncs'
+ 'Mysql-MySQL_3306_Innodb os log fsyncs'
+ 'Mysql-MySQL_3306_Innodb open files  num'
+ 'Mysql-MySQL_3306_Innodb log writes'
+ 'Mysql-MySQL_3306_Innodb log write requests' 'OSLinux-CPU_CPU_CPULoad'
+ 'OSLinux-CPU_CPU_CPUSysTime' 'OSLinux-CPU_CPU_CPUUserTime'
+ 'OSLinux-CPU_CPU_CPUWio' 'OSLinux-OSLinux_FILESYSTEM_-_FSAvailableSpace'
+ 'OSLinux-CPU_CPU_CPUidleutil'
+ 'OSLinux-OSLinux_FILE_-tmp-zabbix_agentd.log_FileSizeMB'
+ 'OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKAvgServ'
+ 'OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKReadWrite'
+ 'OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKAvgServ'
+ 'OSLinux-OSLinux_MEMORY_MEMORY_CacheMem'
+ 'OSLinux-OSLinux_MEMORY_MEMORY_MEMFreeMem'
+ 'OSLinux-OSLinux_MEMORY_MEMORY_MEMTotalMem'
+ 'OSLinux-OSLinux_MEMORY_MEMORY_NoCacheMemPerc'
+ 'OSLinux-OSLinux_MEMORY_MEMORY_UserMem'
+ 'OSLinux-OSLinux_PROCESS_PROCESS_PROCNoZombies'
+ 'OSLinux-OSLinux_PROCESS_PROCESS_PROCPPMem'
+ 'OSLinux-OSLinux_FILE_-home-zabbix_DirSizeMB'
+ 'Mysql-MySQL_3306_Handler Update' 'OSLinux-CPU_CPU-2_SingleCpuidle'
+ 'Mysql-MySQL_3306_Select Scan' 'Mysql-MySQL_3306_Select Range Check'
+ 'Mysql-MySQL_3306_Select Range' 'Mysql-MySQL_3306_Select Full Range Join'
+ 'Mysql-MySQL_3306_Select Full Join' 'Mysql-MySQL_3306_Rows Read'
+ 'Mysql-MySQL_3306_Questions' 'Mysql-MySQL_3306_Qcache Total Blocks'
+ 'Mysql-MySQL_3306_Qcache Queries In Cache'
+ 'Mysql-MySQL_3306_Qcache Not Cached'
+ 'Mysql-MySQL_3306_Qcache Lowmem Prunes' 'Mysql-MySQL_3306_Qcache Inserts'
+ 'Mysql-MySQL_3306_Qcache Hits' 'Mysql-MySQL_3306_Qcache Free Memory'
+ 'Mysql-MySQL_3306_Qcache Free Blocks'
+ 'Mysql-MySQL_3306_Opened table definitions'
+ 'Mysql-MySQL_3306_Opened Tables' 'Mysql-MySQL_3306_Open Tables'
+ 'Tomcat-Threads_7441-"http-nio-8003"_MaxThreadsThreadInfo'
+ 'Tomcat-Threads_7441-"http-nio-8003"_CurrentThreadsBusyThreadInfo'
+ 'Tomcat-Threads_7441-"http-nio-8003"_CurrentThreadCountThreadInfo'
+ 'Tomcat-Sessions_7441--logHome_IS_UNDEFINED_SESSIONRejectedSessions'
+ 'Tomcat-Sessions_7441--logHome_IS_UNDEFINED_SESSIONKeepaliveCounter'
+ 'Tomcat-Sessions_7441--logHome_IS_UNDEFINED_SESSIONActiveCounter'
+ 'Tomcat-Sessions_7441--log.Home_IS_UNDEFINED_SESSIONRejectedSessions'
+ 'Tomcat-Sessions_7441--log.Home_IS_UNDEFINED_SESSIONKeepaliveCounter'
+ 'Tomcat-Sessions_7441--log.Home_IS_UNDEFINED_SESSIONActiveCounter'
+ 'Mysql-MySQL_3306_Slave Open Temp Tables'
+ 'Tomcat-Sessions_7441--UOCP_SESSIONRejectedSessions'
+ 'Mysql-MySQL_3306_Slow launch threads'
+ 'Mysql-MySQL_3306_Sort Merge Passes'
+ 'OSLinux-OSLinux_NETWORK_NETWORK_TotalTcpConnNum'
+ 'OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdc_DSKBps'
+ 'OSLinux-NTP_197.30.1.68_NtpServerTimeOffset'
+ 'OSLinux-NTP_197.30.1.67_NtpServerTimeOffset'
+ 'OSLinux-CPU_CPU-3_SingleCpuUtil' 'OSLinux-CPU_CPU-2_SingleCpuUtil'
+ 'OSLinux-CPU_CPU-1_SingleCpuUtil' 'OSLinux-CPU_CPU-0_SingleCpuUtil'
+ 'Mysql-MySQL_3306_max trx lock memory bytes'
+ 'Mysql-MySQL_3306_ThreadsRunning' 'Mysql-MySQL_3306_ThreadsConnected'
+ 'Mysql-MySQL_3306_Threads Created' 'Mysql-MySQL_3306_Threads Cached'
+ 'Mysql-MySQL_3306_Tc log page waits'
+ 'Mysql-MySQL_3306_Tc log max pages used'
+ 'Mysql-MySQL_3306_Table open cache overflows'
+ 'Mysql-MySQL_3306_Table open cache misses'
+ 'Mysql-MySQL_3306_Table open cache hits'
+ 'Mysql-MySQL_3306_Table Locks Waited'
+ 'Mysql-MySQL_3306_Table Locks Immediate' 'Mysql-MySQL_3306_Sort Scan'
+ 'Mysql-MySQL_3306_Sort Rows' 'Mysql-MySQL_3306_Sort Range'
+ 'Mysql-MySQL_3306_SlowQueries'
+ 'Tomcat-Sessions_7441--UOCP_SESSIONKeepaliveCounter'
+ 'Tomcat-Sessions_7441--UOCP_SESSIONActiveCounter'
+ 'Tomcat-Sessions_7441--_SESSIONRejectedSessions'
+ 'OSLinux-OSLinux_FILESYSTEM_----tmp_FSInodeUsedPercent'
+ 'OSLinux-OSLinux_FILESYSTEM_----tmp_FSCapacity'
+ 'OSLinux-OSLinux_FILESYSTEM_----home_FSInodeUsedPercent'
+ 'OSLinux-OSLinux_FILESYSTEM_----home_FSCapacity'
+ 'OSLinux-OSLinux_FILESYSTEM_----cmbc_admin_FSInodeUsedPercent'
+ 'OSLinux-OSLinux_FILESYSTEM_----cmbc_admin_FSCapacity'
+ 'OSLinux-OSLinux_FILESYSTEM_----boot_FSInodeUsedPercent'
+ 'OSLinux-OSLinux_FILESYSTEM_----boot_FSCapacity'
+ 'OSLinux-OSLinux_FILESYSTEM_----_FSInodeUsedPercent'
+ 'OSLinux-OSLinux_FILESYSTEM_----_FSCapacity'
+ 'OSLinux-CPU_CPU-3_SingleCpuidle' 'OSLinux-CPU_CPU-1_SingleCpuidle'
+ 'OSLinux-CPU_CPU-0_SingleCpuidle'
+ 'JVM-Memory_7778_JVM_Memory_HeapMemoryMax'
+ 'JVM-Memory_7778_JVM_Memory_HeapMemoryUsage'
+ 'JVM-Memory_7778_JVM_Memory_HeapMemoryUsed'
+ 'JVM-Memory_7778_JVM_Memory_NoHeapMemoryUsed'
+ 'JVM-Operating System_7778_JVM_JVM_CPULoad'
+ 'JVM-Runtime_7778_JVM_JVM_Uptime'
+ 'JVM-Threads_7778_JVM_ThreadCount_Threads'
+ 'OSLinux-OSLinux_FILESYSTEM_----tomcat_FSCapacity'
+ 'OSLinux-OSLinux_FILESYSTEM_----tomcat_FSInodeUsedPercent'
+ 'Tomcat-Sessions_7441--_SESSIONKeepaliveCounter'
+ 'Tomcat-Sessions_7441--_SESSIONActiveCounter'
+ 'Tomcat-Requests_7441-"http-nio-8003"_RequestCountRequestInfo'
+ 'Tomcat-Requests_7441-"http-nio-8003"_ProcessingTimeRequestInfo'
+ 'Tomcat-Requests_7441-"http-nio-8003"_MaxTimeRequestInfo'
+ 'Tomcat-Requests_7441-"http-nio-8003"_ErrorCountRequestInfo'
+ 'OSLinux-OSLinux_NETWORK_ens160_NETOutErrPrcc'
+ 'Mysql-MySQL_3306_Handler Savepoint Rollback'
+ 'Mysql-MySQL_3306_Handler Savepoint' 'Mysql-MySQL_3306_Handler Rollback'
+ 'OSLinux-OSLinux_NETWORK_ens160_NETInErrPrc'
+ 'OSLinux-OSLinux_PROCESS_apache_10001_PROCPPCount'
+ 'Mysql-MySQL_3306_Aborted Clients' 'Mysql-MySQL_3306_Aborted Connects'
+ 'Mysql-MySQL_3306_Binlog Cache Disk Use'
+ 'Mysql-MySQL_3306_Binlog Cache Use'
+ 'Mysql-MySQL_3306_Handler Read Rnd Next'
+ 'Mysql-MySQL_3306_Handler Read Rnd' 'Mysql-MySQL_3306_Handler Read Prev'
+ 'Mysql-MySQL_3306_Handler Read Next' 'Mysql-MySQL_3306_Handler Read Key'
+ 'Mysql-MySQL_3306_Handler Read First' 'Mysql-MySQL_3306_Handler Delete'
+ 'Mysql-MySQL_3306_Handler Commit'
+ 'Mysql-MySQL_3306_GetResponseTimeOfMysqld'
+ 'Mysql-MySQL_3306_GetConnectedStateOfMysqld'
+ 'Mysql-MySQL_3306_CurrentSQLMaxRunningTime'
+ 'Mysql-MySQL_3306_Created Tmp Tables'
+ 'Mysql-MySQL_3306_Created Tmp Files'
+ 'Mysql-MySQL_3306_Created Tmp Disk Tables'
+ 'Mysql-MySQL_3306_Com Update Multi' 'Mysql-MySQL_3306_Com Update'
+ 'Mysql-MySQL_3306_Com Select' 'Mysql-MySQL_3306_Com Replace Select'
+ 'Mysql-MySQL_3306_Com Replace' 'Mysql-MySQL_3306_Com Load'
+ 'Mysql-MySQL_3306_Com Insert Select' 'Mysql-MySQL_3306_Com Insert'
+ 'Mysql-MySQL_3306_Com Delete Multi' 'Mysql-MySQL_3306_Com Delete'
+ 'Mysql-MySQL_3306_Bytes Sent' 'Mysql-MySQL_3306_Binlog stmt cache use'
+ 'Mysql-MySQL_3306_Binlog stmt cache disk use'
+ 'Mysql-MySQL_3306_Connections' 'JVM-Threads_7779_JVM_ThreadCount_Threads'
+ 'JVM-Runtime_7779_JVM_JVM_Uptime'
+ 'JVM-Operating System_7779_JVM_JVM_CPULoad'
+ 'JVM-Memory_7779_JVM_Memory_NoHeapMemoryUsed'
+ 'JVM-Memory_7779_JVM_Memory_HeapMemoryMax'
+ 'JVM-Memory_7779_JVM_Memory_HeapMemoryUsage'
+ 'JVM-Memory_7779_JVM_Memory_HeapMemoryUsed'
+ 'OSLinux-OSLinux_FILESYSTEM_-mysqldata_FSInodeUsedPercent'
+ 'OSLinux-OSLinux_FILESYSTEM_-mysqlbak_FSCapacity'
+ 'OSLinux-OSLinux_FILESYSTEM_-mysqlbak_FSInodeUsedPercent'
+ 'OSLinux-OSLinux_FILESYSTEM_-mysqlbak_FSUsedSpace'
+ 'OSLinux-OSLinux_FILESYSTEM_-mysqldata_FSAvailableSpace'
+ 'OSLinux-OSLinux_FILESYSTEM_-mysqldata_FSCapacity'
+ 'OSLinux-OSLinux_FILESYSTEM_-mysqldata_FSUsedSpace'
+ 'OSLinux-OSLinux_FILESYSTEM_-mysqlbak_FSAvailableSpace'
+ 'OSLinux-OSLinux_FILESYSTEM_-usr-openv_FSAvailableSpace'
+ 'OSLinux-OSLinux_FILESYSTEM_-usr-openv_FSCapacity'
+ 'OSLinux-OSLinux_FILESYSTEM_-usr-openv_FSInodeUsedPercent'
+ 'OSLinux-OSLinux_FILESYSTEM_-usr-openv_FSUsedSpace'
+ 'OSLinux-OSLinux_FILESYSTEM_-mysql_FSUsedSpace'
+ 'OSLinux-OSLinux_FILESYSTEM_-mysql_FSCapacity'
+ 'OSLinux-OSLinux_FILESYSTEM_-mysql_FSInodeUsedPercent'
+ 'OSLinux-OSLinux_FILESYSTEM_-mysql_FSAvailableSpace'
+ 'Tomcat-MEMORY_7441-MEMORY_JVMMemoryUsedPercent'
+ 'Tomcat-MEMORY_7441-MEMORY_JVMFreeMemory'
+ 'OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdc_DSKWrite'
+ 'OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdc_DSKWTps'
+ 'OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdc_DSKRead'
+ 'OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdc_DSKPercentBusy'
+ 'OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdc_DSKRTps'
+ 'OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKTps'
+ 'OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKReadWrite'
+ 'OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKTps'
+ 'Mysql-MySQL_3306_Key Writes' 'Mysql-MySQL_3306_Key Write Requests'
+ 'Mysql-MySQL_3306_Bytes Received'
+ 'OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdc_DSKTps'
+ 'OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdc_DSKReadWrite'
+ 'OSLinux-OSLinux_SYSTEM_SYSTEM_Check-Hostname'
+ 'redis-Redis_6379_Redis  (used_cpu_sys_children)'
+ 'Tomcat-MEMORY_7441-MEMORY_JVMUsedMemory'
+ 'Tomcat-MEMORY_7441-MEMORY_JVMTotalMemory'
+ 'Tomcat-MEMORY_7441-MEMORY_JVMMaxMemory'
+ 'redis-Redis_6379_Redis  (aof_enabled)'
+ 'redis-Redis_6379_Redis  (aof_rewrite_in_progress)'
+ 'redis-Redis_6379_Redis  (aof_rewrite_scheduled)'
+ 'redis-Redis_6379_Redis  (blocked_clients)'
+ 'redis-Redis_6379_Redis  (connected_slaves)'
+ 'redis-Redis_6379_Redis  (evicted_keys)'
+ 'redis-Redis_6379_Redis  (expired_keys)'
+ 'redis-Redis_6379_Redis  (instantaneous_ops_per_sec)'
+ 'redis-Redis_6379_Redis  (keyspace_hits)'
+ 'redis-Redis_6379_Redis  (keyspace_misses)'
+ 'redis-Redis_6379_Redis  (connected_clients)'
+ 'redis-Redis_6379_Redis  (latest_fork_usec)'
+ 'redis-Redis_6379_Redis  (loading)' 'redis-Redis_6379_Redis  (maxmemory)'
+ 'redis-Redis_6379_Redis  (used_memory_peak)'
+ 'redis-Redis_6379_Redis  (used_memory)'
+ 'redis-Redis_6379_Redis  (used_cpu_user_children)'
+ 'redis-Redis_6379_Redis  (used_cpu_user)'
+ 'redis-Redis_6379_Redis  (used_cpu_sys)'
+ 'redis-Redis_6379_Redis  (used_memory_rss)'
+ 'redis-Redis_6379_Redis  (uptime_in_seconds)'
+ 'redis-Redis_6379_Redis  (total_commands_processed)'
+ 'redis-Redis_6379_Redis  (rejected_connections)'
+ 'redis-Redis_6379_Redis  (redis_git_dirty)'
+ 'redis-Redis_6379_Redis  (rdb_changes_since_last_save)'
+ 'redis-Redis_6379_Redis  (rdb_bgsave_in_progress)'
+ 'redis-Redis_6379_Redis  (pubsub_channels)'
+ 'redis-Redis_6379_Redis  (total_connections_received)'
+ 'redis-Redis_6379_redis server'
+ 'redis-Redis_6379_Redis  (mem_fragmentation_ratio)'
+ 'redis-Redis_6379_Redis  (lru_clock)'
+ 'redis-Redis_6379_Redis  (client_longest_output_list)'
+ 'redis-Redis_6379_Redis  (client_biggest_input_buf)'
+ 'OSLinux-OSLinux_FILESYSTEM_-app_FSInodeUsedPercent'
+ 'OSLinux-OSLinux_FILESYSTEM_-app_FSCapacity'
+ 'OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdc_DSKAvgServ'
+ 'OSLinux-OSLinux_FILESYSTEM_-app_FSAvailableSpace'
+ 'OSLinux-OSLinux_FILESYSTEM_-app_FSUsedSpace'
+ 'OSLinux-OSLinux_FILESYSTEM_-apache_FSInodeUsedPercent'
+ 'OSLinux-OSLinux_FILESYSTEM_-apache_FSCapacity'
+ 'OSLinux-OSLinux_FILESYSTEM_-apache_FSAvailableSpace'
+ 'OSLinux-OSLinux_FILESYSTEM_-apache_FSUsedSpace'
+ 'Container-DOCKER_CONTAINER_76d31070b844--bcou-role-st-uat-statefulset-1--bcou--UATWKR06_CpuPercent'
+ 'Container-DOCKER_CONTAINER_76d31070b844--bcou-role-st-uat-statefulset-1--bcou--UATWKR06_MemPercent'
+ 'Container-DOCKER_CONTAINER_464dc801314b--bcou-trace-st-uat-statefulset-0--bcou--UATWKR04_MemLimit'
+ 'Container-DOCKER_CONTAINER_3bf443a64876--bcou-role-st-uat-statefulset-1--bcou--UATWKR03_CpuPercent'
+ 'Container-DOCKER_CONTAINER_76d31070b844--bcou-role-st-uat-statefulset-1--bcou--UATWKR06_NetworkTxBytes'
+ 'Container-DOCKER_CONTAINER_464dc801314b--bcou-trace-st-uat-statefulset-0--bcou--UATWKR04_CpuPercent'
+ 'Container-DOCKER_CONTAINER_464dc801314b--bcou-trace-st-uat-statefulset-0--bcou--UATWKR04_MemPercent'
+ 'Container-DOCKER_CONTAINER_464dc801314b--bcou-trace-st-uat-statefulset-0--bcou--UATWKR04_MemUsage'
+ 'Container-DOCKER_CONTAINER_464dc801314b--bcou-trace-st-uat-statefulset-0--bcou--UATWKR04_NetworkTxBytes'
+ 'Container-DOCKER_CONTAINER_f861998c398e--bcou-role-st-uat-statefulset-0--bcou--UATWKR18_NetworkTxBytes'
+ 'Container-DOCKER_CONTAINER_f861998c398e--bcou-role-st-uat-statefulset-0--bcou--UATWKR18_NetworkRxBytes'
+ 'Container-DOCKER_CONTAINER_f861998c398e--bcou-role-st-uat-statefulset-0--bcou--UATWKR18_MemUsage'
+ 'Container-DOCKER_CONTAINER_f861998c398e--bcou-role-st-uat-statefulset-0--bcou--UATWKR18_MemPercent'
+ 'Container-DOCKER_CONTAINER_f861998c398e--bcou-role-st-uat-statefulset-0--bcou--UATWKR18_MemLimit'
+ 'Container-DOCKER_CONTAINER_f861998c398e--bcou-role-st-uat-statefulset-0--bcou--UATWKR18_CpuPercent'
+ 'Container-DOCKER_CONTAINER_3bf443a64876--bcou-role-st-uat-statefulset-1--bcou--UATWKR03_MemUsage'
+ 'Container-DOCKER_CONTAINER_76d31070b844--bcou-role-st-uat-statefulset-1--bcou--UATWKR06_NetworkRxBytes'
+ 'Container-DOCKER_CONTAINER_76d31070b844--bcou-role-st-uat-statefulset-1--bcou--UATWKR06_MemUsage']
+--------------------------------------------------------------------------------[0m
+[32m2026-05-08 15:41:42.726[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m100[0m - [1m--------------------------------------------------------------------------------
+### Step[3]
+Analysis: The 'metric_container.csv' file contains a wide variety of KPIs, including CPU usage, memory usage, disk I/O metrics, network metrics, filesystem metrics, MySQL performance metrics, JVM metrics, and container-specific metrics. These KPIs provide comprehensive telemetry data for system performance monitoring and analysis. The next step is to preprocess the data by aggregating each KPI for each component that is a possible root cause component, calculate global thresholds (e.g., P95), and filter the data within the specified time range (March 23, 2021, from 06:30 to 07:00).
+Instruction: Aggregate each KPI of each possible root cause component from the 'metric_container.csv' file to obtain multiple time series classified by 'component-KPI'. Then, calculate the global P95 threshold for each 'component-KPI' time series.
+--------------------------------------------------------------------------------[0m
+[32m2026-05-08 15:41:52.091[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m123[0m - [1m--------------------------------------------------------------------------------
+Step[3]
+### Observation:
+```python
+"The global P95 thresholds for each 'component-KPI' time series have been successfully calculated. The results include 1,723 rows, representing various KPIs across the possible root cause components. Each row contains the component name, KPI name, and its corresponding P95 threshold value."
+```
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+cmdb_id                                          kpi_name  p95_threshold
+0         IG01          JVM-Memory_7778_JVM_Memory_HeapMemoryMax   2.040136e+09
+1         IG01        JVM-Memory_7778_JVM_Memory_HeapMemoryUsage   4.168419e+01
+2         IG01         JVM-Memory_7778_JVM_Memory_HeapMemoryUsed   8.483727e+08
+3         IG01       JVM-Memory_7778_JVM_Memory_NoHeapMemoryUsed   5.869456e+07
+4         IG01         JVM-Operating System_7778_JVM_JVM_CPULoad   5.835350e-01
+...        ...                                               ...            ...
+1718  apache02                      OSLinux-OSLinux_SWAP_SWAP_Si   0.000000e+00
+1719  apache02                      OSLinux-OSLinux_SWAP_SWAP_So   0.000000e+00
+1720  apache02  OSLinux-OSLinux_SYSTEM_SYSTEM_Check-DefaultRoute   1.000000e+00
+1721  apache02      OSLinux-OSLinux_SYSTEM_SYSTEM_Check-Hostname   1.000000e+00
+1722  apache02                OSLinux-OSLinux_ZABBIX_Host_Uptime   7.664431e+06
+
+[1723 rows x 3 columns]
+
+**Note**: The printed pandas DataFrame is truncated due to its size. Only **10 rows** are displayed, which may introduce observation bias due to the incomplete table. If you want to comprehensively understand the details without bias, please ask Executor using `df.head(X)` to display more rows.
+--------------------------------------------------------------------------------[0m
+[32m2026-05-08 15:41:56.592[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m100[0m - [1m--------------------------------------------------------------------------------
+### Step[4]
+Analysis: The global P95 thresholds for each 'component-KPI' time series have been successfully calculated. This provides a baseline for identifying anomalies in the telemetry data. The next step is to filter the data within the specified time range (March 23, 2021, from 06:30 to 07:00) for all 'component-KPI' time series to perform anomaly detection.
+Instruction: Filter the data in 'metric_container.csv' to include only the time range from March 23, 2021, 06:30 to 07:00 (UTC+8). Ensure that the filtered data includes all 'component-KPI' time series for further anomaly detection.
+--------------------------------------------------------------------------------[0m
+[32m2026-05-08 15:42:03.385[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m123[0m - [1m--------------------------------------------------------------------------------
+Step[4]
+### Observation:
+```python
+"The data in 'metric_container.csv' has been successfully filtered to include only the time range from March 23, 2021, 06:30 to 07:00 (UTC+8). The filtered dataset contains 28,465 rows, representing all 'component-KPI' time series within the specified time range."
+```
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+timestamp   cmdb_id                                           kpi_name         value
+371448  1616452200  Tomcat03         OSLinux-OSLinux_PROCESS_zabbix_PROCPPCount  3.000000e+00
+371449  1616452200  Tomcat03    Tomcat-Sessions_7441--UOCP_SESSIONActiveCounter  0.000000e+00
+371450  1616452200  Tomcat03     Tomcat-Sessions_7441--_SESSIONRejectedSessions  0.000000e+00
+371451  1616452200  Tomcat03     Tomcat-Sessions_7441--_SESSIONKeepaliveCounter  0.000000e+00
+371452  1616452200  Tomcat03        Tomcat-Sessions_7441--_SESSIONActiveCounter  0.000000e+00
+...            ...       ...                                                ...           ...
+399908  1616453940  Tomcat02        Tomcat-Sessions_7441--_SESSIONActiveCounter  0.000000e+00
+399909  1616453940  Tomcat02  Tomcat-Requests_7441-"http-nio-8003"_RequestCo...  2.568970e+06
+399910  1616453940  Tomcat02  Tomcat-Requests_7441-"http-nio-8003"_Processin...  1.593491e+09
+399911  1616453940  Tomcat02  Tomcat-Requests_7441-"http-nio-8003"_MaxTimeRe...  3.906190e+05
+399912  1616453940  Tomcat02  Tomcat-Requests_7441-"http-nio-8003"_ErrorCoun...  5.140000e+02
+
+[28465 rows x 4 columns]
+
+**Note**: The printed pandas DataFrame is truncated due to its size. Only **10 rows** are displayed, which may introduce observation bias due to the incomplete table. If you want to comprehensively understand the details without bias, please ask Executor using `df.head(X)` to display more rows.
+--------------------------------------------------------------------------------[0m
+[32m2026-05-08 15:42:08.856[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m100[0m - [1m--------------------------------------------------------------------------------
+### Step[5]
+Analysis: The data in 'metric_container.csv' has been successfully filtered to include only the time range from March 23, 2021, 06:30 to 07:00 (UTC+8). This filtered dataset contains 28,465 rows, representing all 'component-KPI' time series within the specified time range. The next step is to perform anomaly detection by identifying data points that exceed the global P95 thresholds for each 'component-KPI' time series.
+Instruction: Perform anomaly detection by comparing the values in the filtered dataset against the global P95 thresholds for each 'component-KPI' time series. Identify and list all anomalies where the value exceeds the P95 threshold.
+--------------------------------------------------------------------------------[0m
+[32m2026-05-08 15:42:14.853[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m123[0m - [1m--------------------------------------------------------------------------------
+Step[5]
+### Observation:
+```python
+"Anomaly detection has been successfully performed on the filtered dataset. A total of 138 anomalies were identified where the values exceeded the global P95 thresholds for their respective 'component-KPI' time series. These anomalies span across various components and KPIs."
+```
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+timestamp   cmdb_id                                        kpi_name         value  p95_threshold
+83     1616452200  Tomcat01  OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKBps  5.000000e+00   1.000000e+00
+436    1616452200  apache01                      OSLinux-CPU_CPU_CPUSysTime  1.852170e+01   1.851309e+01
+548    1616452200  Tomcat02                 OSLinux-CPU_CPU-0_SingleCpuidle  9.945150e+01   9.938480e+01
+662    1616452200   Mysql02  Mysql-MySQL_3306_Innodb buffer pool pages free  8.195000e+03   8.194000e+03
+902    1616452260   Mysql02  Mysql-MySQL_3306_Innodb buffer pool pages free  8.195000e+03   8.194000e+03
+...           ...       ...                                             ...           ...            ...
+27748  1616453940      MG02  OSLinux-OSLinux_LOCALDISK_LOCALDISK-sda_DSKBps  8.000000e+00   4.000000e+00
+28080  1616453940      IG01       JVM-Memory_7778_JVM_Memory_HeapMemoryUsed  8.747325e+08   8.483727e+08
+28091  1616453940      IG01                 OSLinux-CPU_CPU-0_SingleCpuidle  9.950120e+01   9.945122e+01
+28099  1616453940      IG01      JVM-Memory_7778_JVM_Memory_HeapMemoryUsage  4.168760e+01   4.168419e+01
+28439  1616453940  Tomcat02  OSLinux-OSLinux_LOCALDISK_LOCALDISK-sdb_DSKBps  6.000000e+00   5.000000e+00
+
+[138 rows x 5 columns]
+
+**Note**: The printed pandas DataFrame is truncated due to its size. Only **10 rows** are displayed, which may introduce observation bias due to the incomplete table. If you want to comprehensively understand the details without bias, please ask Executor using `df.head(X)` to display more rows.
+--------------------------------------------------------------------------------[0m
+[32m2026-05-08 15:42:20.962[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m100[0m - [1m--------------------------------------------------------------------------------
+### Step[6]
+Analysis: Anomaly detection has been successfully performed, and 138 anomalies were identified where the values exceeded the global P95 thresholds for their respective 'component-KPI' time series. These anomalies span across various components and KPIs. The next step is to identify faults by filtering out isolated noise spikes and locating consecutive sub-series of anomalies for each 'component-KPI' time series.
+Instruction: Identify faults by grouping consecutive anomalies for each 'component-KPI' time series in the filtered dataset. Filter out isolated noise spikes and ensure that faults represent meaningful consecutive sub-series of anomalies.
+--------------------------------------------------------------------------------[0m
+[32m2026-05-08 15:42:28.593[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m123[0m - [1m--------------------------------------------------------------------------------
+Step[6]
+### Observation:
+```python
+"Faults have been successfully identified by grouping consecutive anomalies for each 'component-KPI' time series. A total of 66 rows represent meaningful consecutive sub-series of anomalies, filtering out isolated noise spikes. These faults span across various components and KPIs, providing insights into potential system issues."
+```
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+timestamp   cmdb_id                                  kpi_name     value  p95_threshold  time_diff  is_consecutive  fault_group
+5206   1616452500      IG01           OSLinux-CPU_CPU-0_SingleCpuidle   99.5510       99.45122        0.0            True            1
+24505  1616453700      IG01           OSLinux-CPU_CPU-0_SingleCpuidle   99.4680       99.45122     1200.0           False            1
+28091  1616453940      IG01           OSLinux-CPU_CPU-0_SingleCpuidle   99.5012       99.45122      240.0           False            1
+15728  1616453160      IG01  OSLinux-OSLinux_MEMORY_MEMORY_MEMFreeMem  171.0000      167.00000       60.0            True            2
+18401  1616453340      IG01  OSLinux-OSLinux_MEMORY_MEMORY_MEMFreeMem  170.0000      167.00000      180.0           False            2
+...           ...       ...                                       ...       ...            ...        ...             ...          ...
+436    1616452200  apache01                OSLinux-CPU_CPU_CPUSysTime   18.5217       18.51309        0.0            True            1
+4352   1616452440  apache01                OSLinux-CPU_CPU_CPUSysTime   18.5236       18.51309      240.0           False            1
+20794  1616453460  apache01                OSLinux-CPU_CPU_CPUSysTime   18.5139       18.51309     1020.0           False            1
+6476   1616452560  apache02           OSLinux-CPU_CPU-3_SingleCpuidle   99.8671       99.85050        0.0            True            1
+21436  1616453520  apache02           OSLinux-CPU_CPU-3_SingleCpuidle   99.8837       99.85050      960.0           False            1
+
+[66 rows x 8 columns]
+
+**Note**: The printed pandas DataFrame is truncated due to its size. Only **10 rows** are displayed, which may introduce observation bias due to the incomplete table. If you want to comprehensively understand the details without bias, please ask Executor using `df.head(X)` to display more rows.
+--------------------------------------------------------------------------------[0m
+[32m2026-05-08 15:42:32.462[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m100[0m - [1m--------------------------------------------------------------------------------
+### Step[7]
+Analysis: Faults have been successfully identified by grouping consecutive anomalies for each 'component-KPI' time series. A total of 66 rows represent meaningful consecutive sub-series of anomalies, filtering out isolated noise spikes. These faults span across various components and KPIs. Since the issue specifies a single failure, the next step is to determine the root cause by identifying the fault that shows the most significant deviation from the threshold (i.e., >> 50%) among the identified faults.
+Instruction: Identify the fault with the most significant deviation from the threshold (i.e., where the value exceeds the threshold by the largest margin) among the identified faults. Provide the component, KPI, and timestamp of this fault.
+--------------------------------------------------------------------------------[0m
+[32m2026-05-08 15:42:39.120[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m123[0m - [1m--------------------------------------------------------------------------------
+Step[7]
+### Observation:
+```python
+"The fault with the most significant deviation from the threshold occurred on component 'apache01' for the KPI 'OSLinux-CPU_CPU-2_SingleCpuUtil' at timestamp 1616452320 (UTC+8). The value exceeded the threshold by a margin of 34.65483."
+```
+
+The original code execution output of IPython Kernel is also provided below for reference:
+
+cmdb_id                             apache01
+kpi_name     OSLinux-CPU_CPU-2_SingleCpuUtil
+timestamp                         1616452320
+deviation                           34.65483
+Name: 1929, dtype: object
+--------------------------------------------------------------------------------[0m
+[32m2026-05-08 15:42:45.608[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.controller[0m:[36mcontrol_loop[0m:[36m100[0m - [1m--------------------------------------------------------------------------------
+### Step[8]
+Analysis: The fault with the most significant deviation from the threshold has been identified. It occurred on component 'apache01' for the KPI 'OSLinux-CPU_CPU-2_SingleCpuUtil' at timestamp 1616452320 (UTC+8), with a deviation of 34.65483. Since this is the most significant fault and the issue specifies a single failure, this fault is likely the root cause. The root cause component is 'apache01', and the root cause occurrence datetime is the timestamp 1616452320 (UTC+8).
+Instruction: The root cause of the failure is the component 'apache01', and the root cause occurrence datetime is March 23, 2021, 06:32:00 (UTC+8). The reason for the failure is high CPU usage, as indicated by the KPI 'OSLinux-CPU_CPU-2_SingleCpuUtil' exceeding the threshold with a significant deviation.
+--------------------------------------------------------------------------------[0m
+[32m2026-05-08 15:42:50.941[0m | [1mINFO    [0m | [36mrca.baseline.rca_agent.rca_agent[0m:[36mrun[0m:[36m13[0m - [1mResult: {
+    "1": {
+        "root cause occurrence datetime": "2021-03-23 06:32:00",
+        "root cause component": "apache01",
+        "root cause reason": "high CPU usage"
+    }
+}[0m
+[32m2026-05-08 15:42:50.946[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m119[0m - [1mTrajectory has been saved to test/monitor/Bank/agent-rca-gpt-4o/2026-05-08_13-12-27/trajectory/2026-05-08_13-12-27_#38-0.ipynb[0m
+[32m2026-05-08 15:42:50.947[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m123[0m - [1mPrompt has been saved to test/monitor/Bank/agent-rca-gpt-4o/2026-05-08_13-12-27/prompt/2026-05-08_13-12-27_#38-0.json[0m
+[32m2026-05-08 15:42:50.952[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m140[0m - [1mPrediction: {
+    "1": {
+        "root cause occurrence datetime": "2021-03-23 06:32:00",
+        "root cause component": "apache01",
+        "root cause reason": "high CPU usage"
+    }
+}[0m
+[32m2026-05-08 15:42:50.952[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m141[0m - [1mScoring Points: The only root cause occurrence time is within 1 minutes (i.e., <=1min) of 2021-03-23 06:42:00
+The only predicted root cause component is MG01
+[0m
+[32m2026-05-08 15:42:50.953[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m142[0m - [1mPassed Criteria: [][0m
+[32m2026-05-08 15:42:50.953[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m143[0m - [1mFailed Criteria: ['2021-03-23 06:42:00', 'MG01'][0m
+[32m2026-05-08 15:42:50.953[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m144[0m - [1mScore: 0.0[0m

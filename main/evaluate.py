@@ -101,6 +101,56 @@ def evaluate(prediction:str, scoring_points:str):
     return passing_criteria, failing_criteria, bin_score
 
 
+def evaluate_rca100(prediction: str, gt_json_path: str):
+    """
+    Evaluate rca100 prediction against ground truth JSON file.
+        args:
+            prediction: str, the agent's JSON prediction with root_cause_entities and root_cause_types
+            gt_json_path: str, path to the .gt.json file
+    """
+    import json
+
+    with open(gt_json_path, 'r', encoding='utf-8') as f:
+        gt = json.load(f)
+
+    gt_entities = set(gt.get("root_cause_entities", []))
+    gt_types = set(gt.get("root_cause_types", []))
+
+    # Parse prediction JSON
+    try:
+        pred = json.loads(prediction)
+    except json.JSONDecodeError:
+        # Try to extract JSON from markdown code block
+        m = re.search(r'```json\s*(.*?)\s*```', prediction, re.S)
+        if m:
+            pred = json.loads(m.group(1))
+        else:
+            return [], [], 0.0
+
+    pred_entities = set(pred.get("root_cause_entities", []))
+    pred_types = set(pred.get("root_cause_types", []))
+
+    # Evaluate: exact match
+    passed = []
+    failed = []
+
+    if gt_entities & pred_entities:
+        passed.append(f"entities: {gt_entities & pred_entities}")
+    else:
+        failed.append(f"entities: expected {gt_entities}, got {pred_entities}")
+
+    if gt_types & pred_types:
+        passed.append(f"types: {gt_types & pred_types}")
+    else:
+        failed.append(f"types: expected {gt_types}, got {pred_types}")
+
+    total_fields = len(gt_entities) + len(gt_types)  # typically 2 for single-root cases
+    matched_fields = len(gt_entities & pred_entities) + len(gt_types & pred_types)
+    score = matched_fields / total_fields if total_fields > 0 else 0.0
+
+    return passed, failed, round(score, 2)
+
+
 def file_evaluate(prediction_file:str, query_file:str, report_file:str):
     """
     Evaluate a prediction file of certain dataset with corresponding query file and save the evaluation results to a csv file
